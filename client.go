@@ -1,14 +1,34 @@
 package goway
 
-import "github.com/gorilla/websocket"
+import (
+	"time"
 
-func NewClient(conn *websocket.Conn) *Client {
-	return &Client{conn: conn}
-}
+	"github.com/gorilla/websocket"
+)
 
 type Client struct {
 	conn    *websocket.Conn
 	session []*KV[any]
+}
+
+func (c *Client) Send(mt int, message []byte) error {
+	return c.conn.WriteMessage(mt, message)
+}
+
+func (c *Client) Ping(message []byte) error {
+	return c.conn.WriteControl(websocket.PingMessage, nil, time.Now().Add(time.Second))
+}
+
+func (c *Client) Close() error {
+	c.conn.WriteControl(websocket.CloseMessage, nil, time.Now().Add(time.Second))
+
+	return c.conn.Close()
+}
+
+func (c *Client) CloseWithMessage(message []byte) error {
+	c.conn.WriteControl(websocket.CloseMessage, message, time.Now().Add(time.Second))
+
+	return c.conn.Close()
 }
 
 func (c *Client) Set(name string, val any) {
