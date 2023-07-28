@@ -1,0 +1,18 @@
+syntax = "proto3";
+option go_package = "./protobuf;protobuf";
+import "protobuf/frame_type.proto";
+
+package protobuf;
+
+message Frame {
+    FrameType type = 1;
+    bytes body = 2;
+}
+
+message HeartBeat {
+    int64 upTimestamp = 1;
+    int64 downTimestamp = 2;
+}
+
+message Close {}
+message Maintain {}

@@ -1,0 +1,37 @@
+syntax = "proto3";
+option go_package = "./protobuf;protobuf";
+package protobuf;
+
+enum PlayerType {
+    WHITE = 0;
+    BLACK = 1;
+}
+
+message Ready {}
+message Disconected {}
+
+message DropDot {
+    int32 x = 1;
+    int32 y = 2;
+    PlayerType player = 3;
+}
+message DropDotConfirm {
+    int32 x = 1;
+    int32 y = 2;
+    PlayerType player = 3;
+}
+
+message DropCheck {
+    PlayerType player = 1;
+}
+message DropCheckConfirm {
+    PlayerType player = 1;
+}
+
+message Win {
+    PlayerType player = 1;
+}
+
+message Surrender {
+    PlayerType player = 1;
+}
