@@ -1,36 +1,67 @@
 package goway
 
 import (
+	"flag"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
 
-type Server struct {
-	upgrader websocket.Upgrader
+var (
+	addr               string
+	handleShakeTimeout int64
+	readBufferSize     int
+	writeBufferSize    int
+	enableCompression  bool
+)
 
-	beforeUpgradeHandler func(w http.ResponseWriter, r *http.Request) bool
-	afterUpgradeHandler  func(*Client)
-	pingHandler          func(*Client, []byte)
-	pongHandler          func(*Client, []byte)
-	closeHandler         func(*Client)
-	messageHandler       func(*Client, int, []byte)
+func parseFlag() {
+	flag.StringVar(&addr, "addr", ":5678", "set addr for server")
+	flag.Int64Var(&handleShakeTimeout, "timeout", 3000, "set connection timeout")
+	flag.IntVar(&readBufferSize, "read_buffer_size", 0, "set read buffer size")
+	flag.IntVar(&writeBufferSize, "write_buffer_size", 0, "set write buffer size")
+	flag.BoolVar(&enableCompression, "enable_compression", false, "enable message compression")
 }
 
-func (s *Server) Listen(addr string) {
+func NewServer() *Server {
+	parseFlag()
+	return &Server{upgrader: websocket.Upgrader{
+		HandshakeTimeout:  time.Millisecond * time.Duration(handleShakeTimeout),
+		ReadBufferSize:    readBufferSize,
+		WriteBufferSize:   writeBufferSize,
+		EnableCompression: enableCompression,
+		CheckOrigin: func(*http.Request) bool {
+			return true
+		},
+	}, addr: addr}
+}
+
+type Server struct {
+	addr     string
+	upgrader websocket.Upgrader
+
+	beforeUpgrade func(w http.ResponseWriter, r *http.Request) bool
+	afterUpgrade  func(*Client)
+	handlePing    func(*Client, []byte)
+	handlePong    func(*Client, []byte)
+	handleClose   func(*Client)
+	handleMessage func(*Client, int, []byte)
+}
+
+func (s *Server) Run() error {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if !s.beforeUpgradeHandler(w, r) {
+		if !s.beforeUpgrade(w, r) {
 			return
 		}
 		c, err := s.upgrader.Upgrade(w, r, nil)
-
 		if err != nil {
 			log.Print("upgrade:", err)
 			return
 		}
 		client := &Client{conn: c}
-		s.afterUpgradeHandler(client)
+		s.afterUpgrade(client)
 		defer c.Close()
 		for {
 			mt, message, err := c.ReadMessage()
@@ -40,40 +71,45 @@ func (s *Server) Listen(addr string) {
 			}
 			switch mt {
 			case websocket.PingMessage:
-				s.pingHandler(client, message)
+				s.handlePing(client, message)
 			case websocket.PongMessage:
-				s.pongHandler(client, message)
+				s.handlePong(client, message)
 			case websocket.TextMessage, websocket.BinaryMessage:
-				s.messageHandler(client, mt, message)
+				s.handleMessage(client, mt, message)
 			case websocket.CloseMessage:
-				s.closeHandler(client)
+				s.handleClose(client)
 				return
 			}
 		}
 	})
-	log.Fatal(http.ListenAndServe(addr, nil))
+	return http.ListenAndServe(s.addr, nil)
+}
+
+func (s *Server) Listen(addr string) error {
+	s.addr = addr
+	return s.Run()
 }
 
 func (s *Server) SetAfterUpgradeHandler(handler func(*Client)) {
-	s.afterUpgradeHandler = handler
+	s.afterUpgrade = handler
 }
 
 func (s *Server) SetBeforeUpgradeHandler(handler func(w http.ResponseWriter, r *http.Request) bool) {
-	s.beforeUpgradeHandler = handler
+	s.beforeUpgrade = handler
 }
 
 func (s *Server) SetCloseHandler(handler func(*Client)) {
-	s.closeHandler = handler
+	s.handleClose = handler
 }
 
 func (s *Server) SetMessageHandler(handler func(*Client, int, []byte)) {
-	s.messageHandler = handler
+	s.handleMessage = handler
 }
 
 func (s *Server) SetPingHandler(handler func(*Client, []byte)) {
-	s.pingHandler = handler
+	s.handlePing = handler
 }
 
 func (s *Server) SetPongHandler(handler func(*Client, []byte)) {
-	s.pongHandler = handler
+	s.handlePong = handler
 }
