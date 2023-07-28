@@ -1,0 +1,19 @@
+syntax = "proto3";
+option go_package = "./protobuf;protobuf";
+package protobuf;
+
+enum FrameType {
+
+    // control frame
+    HEARTBEAT = 0;
+    CLOSE = 1;
+    MAINTAIN = 2;
+
+    // game message
+    DROP_DOT = 3;
+    DROP_DOT_CONFIRM = 4;
+    DROP_CHECK = 5;
+    DROP_CHECK_CONFIRM = 6;
+    WIN = 7;
+    SURRENDER = 8;
+}
