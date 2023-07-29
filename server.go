@@ -2,6 +2,7 @@ package goway
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -71,10 +72,10 @@ func (s *Server) Run() error {
 		}
 		c, err := s.upgrader.Upgrade(w, r, nil)
 		if err != nil {
-			log.Print("upgrade:", err)
+			w.Write([]byte(fmt.Sprintf("upgrade error: %s", err)))
 			return
 		}
-		client := &Client{conn: c}
+		client := NewClient(c)
 		s.afterUpgrade(client)
 		defer c.Close()
 		defer s.recovery(client)

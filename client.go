@@ -2,18 +2,51 @@ package goway
 
 import (
 	pb "flynoob/goway/protobuf"
+	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/pkg/errors"
 	"google.golang.org/protobuf/proto"
 )
+
+type Color int
+type SocketStatus int
+
+const (
+	Green  = Color(1)
+	Blue   = Color(2)
+	Yellow = Color(3)
+	Red    = Color(4)
+)
+
+const (
+	Connected    = SocketStatus(1)
+	DisConnected = SocketStatus(2)
+)
+
+func NewClient(conn *websocket.Conn) *Client {
+	return &Client{conn: conn, Color: Green}
+}
 
 type Client struct {
 	conn    *websocket.Conn
 	session []*KV[any]
+	status  SocketStatus
+
+	LastPingAt time.Time
+	Color      Color
+
+	sync.RWMutex
 }
 
 func (c *Client) Send(mt int, message []byte) error {
+	c.RLock()
+	defer c.RUnlock()
+	if c.status != Connected {
+		return errors.New("Websocket is disconnected")
+	}
+
 	return c.conn.WriteMessage(mt, message)
 }
 
@@ -23,26 +56,30 @@ func (c *Client) SendFrame(frame *pb.Frame) error {
 	} else {
 		return c.Send(2, bs)
 	}
-
-}
-
-func (c *Client) Ping(message []byte) error {
-	return c.conn.WriteControl(websocket.PingMessage, nil, time.Now().Add(time.Second))
 }
 
 func (c *Client) Close() error {
+	c.Lock()
+	defer c.Unlock()
+	if c.status == DisConnected {
+		return nil
+	}
+	c.status = DisConnected
 	c.conn.WriteControl(websocket.CloseMessage, nil, time.Now().Add(time.Second))
 
 	return c.conn.Close()
 }
 
-func (c *Client) CloseWithMessage(message []byte) error {
-	c.conn.WriteControl(websocket.CloseMessage, message, time.Now().Add(time.Second))
+func (c *Client) Status() SocketStatus {
+	c.RLock()
+	defer c.RUnlock()
 
-	return c.conn.Close()
+	return c.status
 }
 
 func (c *Client) Set(name string, val any) {
+	c.Lock()
+	defer c.Unlock()
 	if kv, ok := c.Get(name); ok {
 		kv.Value = val
 
@@ -52,6 +89,8 @@ func (c *Client) Set(name string, val any) {
 }
 
 func (c *Client) Get(name string) (*KV[any], bool) {
+	c.RLock()
+	defer c.RUnlock()
 	for _, kv := range c.session {
 		if kv.Key == name {
 			return kv, true
