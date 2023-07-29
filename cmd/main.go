@@ -24,10 +24,5 @@ func main() {
 	serve.SetCloseHandler(func(c *goway.Client) {
 		log.Println("Connection closed")
 	})
-	serve.SetMessageHandler(func(client *goway.Client, mt int, bs []byte) {
-		log.Printf("%d", len(bs))
-		client.Send(mt, bs)
-		client.Ping(bs)
-	})
 	serve.Run()
 }

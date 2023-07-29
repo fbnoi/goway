@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/pkg/errors"
 )
 
 var (
@@ -27,27 +28,40 @@ func parseFlag() {
 
 func NewServer() *Server {
 	parseFlag()
-	return &Server{upgrader: websocket.Upgrader{
-		HandshakeTimeout:  time.Millisecond * time.Duration(handleShakeTimeout),
-		ReadBufferSize:    readBufferSize,
-		WriteBufferSize:   writeBufferSize,
-		EnableCompression: enableCompression,
-		CheckOrigin: func(*http.Request) bool {
-			return true
+	return &Server{
+		upgrader: websocket.Upgrader{
+			HandshakeTimeout:  time.Millisecond * time.Duration(handleShakeTimeout),
+			ReadBufferSize:    readBufferSize,
+			WriteBufferSize:   writeBufferSize,
+			EnableCompression: enableCompression,
+			CheckOrigin: func(*http.Request) bool {
+				return true
+			},
 		},
-	}, addr: addr}
+		addr:              addr,
+		bus:               NewBus(),
+		beforeUpgrade:     func(w http.ResponseWriter, r *http.Request) bool { return true },
+		afterUpgrade:      func(*Client) {},
+		handlePing:        func(*Client, []byte) {},
+		handlePong:        func(*Client, []byte) {},
+		handleClose:       func(*Client) {},
+		handleTextMessage: func(*Client, []byte) {},
+	}
 }
 
 type Server struct {
+	bus      Bus
 	addr     string
 	upgrader websocket.Upgrader
 
-	beforeUpgrade func(w http.ResponseWriter, r *http.Request) bool
-	afterUpgrade  func(*Client)
-	handlePing    func(*Client, []byte)
-	handlePong    func(*Client, []byte)
-	handleClose   func(*Client)
-	handleMessage func(*Client, int, []byte)
+	beforeUpgrade     func(w http.ResponseWriter, r *http.Request) bool
+	afterUpgrade      func(*Client)
+	handlePing        func(*Client, []byte)
+	handlePong        func(*Client, []byte)
+	handleClose       func(*Client)
+	handleTextMessage func(*Client, []byte)
+	handleByteMessage func(*Client, []byte)
+	handleError       func(*Client, []byte, error)
 }
 
 func (s *Server) Run() error {
@@ -63,6 +77,7 @@ func (s *Server) Run() error {
 		client := &Client{conn: c}
 		s.afterUpgrade(client)
 		defer c.Close()
+		defer s.recovery(client)
 		for {
 			mt, message, err := c.ReadMessage()
 			if err != nil {
@@ -74,8 +89,10 @@ func (s *Server) Run() error {
 				s.handlePing(client, message)
 			case websocket.PongMessage:
 				s.handlePong(client, message)
-			case websocket.TextMessage, websocket.BinaryMessage:
-				s.handleMessage(client, mt, message)
+			case websocket.TextMessage:
+				s.handleTextMessage(client, message)
+			case websocket.BinaryMessage:
+				s.handleByteMessage(client, message)
 			case websocket.CloseMessage:
 				s.handleClose(client)
 				return
@@ -102,8 +119,12 @@ func (s *Server) SetCloseHandler(handler func(*Client)) {
 	s.handleClose = handler
 }
 
-func (s *Server) SetMessageHandler(handler func(*Client, int, []byte)) {
-	s.handleMessage = handler
+func (s *Server) SetTextMessageHandler(handler func(*Client, []byte)) {
+	s.handleTextMessage = handler
+}
+
+func (s *Server) SetByteMessageHandler(handler func(*Client, []byte)) {
+	s.handleByteMessage = handler
 }
 
 func (s *Server) SetPingHandler(handler func(*Client, []byte)) {
@@ -112,4 +133,10 @@ func (s *Server) SetPingHandler(handler func(*Client, []byte)) {
 
 func (s *Server) SetPongHandler(handler func(*Client, []byte)) {
 	s.handlePong = handler
+}
+
+func (s *Server) recovery(client *Client) {
+	if message := recover(); message != nil {
+		s.handleError(client, nil, errors.Errorf("Websocket error: %v", message))
+	}
 }

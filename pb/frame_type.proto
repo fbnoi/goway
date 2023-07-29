@@ -1,10 +1,11 @@
 syntax = "proto3";
 option go_package = "./protobuf;protobuf";
-package protobuf;
+package proto;
 
 enum FrameType {
 
     // control frame
+    OPEN = 0;
     HEARTBEAT = 0;
     CLOSE = 1;
     MAINTAIN = 2;

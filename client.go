@@ -1,9 +1,11 @@
 package goway
 
 import (
+	pb "flynoob/goway/protobuf"
 	"time"
 
 	"github.com/gorilla/websocket"
+	"google.golang.org/protobuf/proto"
 )
 
 type Client struct {
@@ -13,6 +15,15 @@ type Client struct {
 
 func (c *Client) Send(mt int, message []byte) error {
 	return c.conn.WriteMessage(mt, message)
+}
+
+func (c *Client) SendFrame(frame *pb.Frame) error {
+	if bs, err := proto.Marshal(frame); err != nil {
+		return err
+	} else {
+		return c.Send(2, bs)
+	}
+
 }
 
 func (c *Client) Ping(message []byte) error {

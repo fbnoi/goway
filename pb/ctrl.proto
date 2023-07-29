@@ -1,8 +1,8 @@
 syntax = "proto3";
 option go_package = "./protobuf;protobuf";
-import "protobuf/frame_type.proto";
+import "proto/frame_type.proto";
 
-package protobuf;
+package proto;
 
 message Frame {
     FrameType type = 1;
