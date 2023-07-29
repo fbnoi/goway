@@ -27,10 +27,11 @@ const (
 
 func NewClient(serve *Server, conn *websocket.Conn) *Client {
 	return &Client{
-		conn:  conn,
-		Color: Green,
-		bus:   NewBus(),
-		serve: serve,
+		conn:   conn,
+		Color:  Green,
+		bus:    NewBus(),
+		serve:  serve,
+		status: Connected,
 	}
 }
 

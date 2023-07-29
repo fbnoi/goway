@@ -39,12 +39,11 @@ func OnPing(client *gw.Client, frame *pb.Frame) error {
 	if frame.Body, err = proto.Marshal(heartbeat); err != nil {
 		return err
 	}
-	client.Send(frame)
-	return nil
+	return client.Send(frame)
 }
 
 func checkHealth(client *gw.Client) {
-	if client.LastPingAt.Add(time.Second).Before(time.Now()) {
+	if client.LastPingAt.Add(2 * time.Second).Before(time.Now()) {
 		client.Color += 1
 	}
 

@@ -81,6 +81,9 @@ func (s *Server) Run() error {
 		defer c.Close()
 		defer s.recovery(client)
 		for {
+			if client.Status() != Connected {
+				return
+			}
 			mt, message, err := c.ReadMessage()
 			if err != nil {
 				log.Println("read:", err)
