@@ -75,7 +75,7 @@ func (x *Frame) GetBody() []byte {
 	return nil
 }
 
-type HeartBeat struct {
+type Heartbeat struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -84,8 +84,8 @@ type HeartBeat struct {
 	DownTimestamp int64 `protobuf:"varint,2,opt,name=downTimestamp,proto3" json:"downTimestamp,omitempty"`
 }
 
-func (x *HeartBeat) Reset() {
-	*x = HeartBeat{}
+func (x *Heartbeat) Reset() {
+	*x = Heartbeat{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_pb_ctrl_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -93,13 +93,13 @@ func (x *HeartBeat) Reset() {
 	}
 }
 
-func (x *HeartBeat) String() string {
+func (x *Heartbeat) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*HeartBeat) ProtoMessage() {}
+func (*Heartbeat) ProtoMessage() {}
 
-func (x *HeartBeat) ProtoReflect() protoreflect.Message {
+func (x *Heartbeat) ProtoReflect() protoreflect.Message {
 	mi := &file_pb_ctrl_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -111,19 +111,19 @@ func (x *HeartBeat) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use HeartBeat.ProtoReflect.Descriptor instead.
-func (*HeartBeat) Descriptor() ([]byte, []int) {
+// Deprecated: Use Heartbeat.ProtoReflect.Descriptor instead.
+func (*Heartbeat) Descriptor() ([]byte, []int) {
 	return file_pb_ctrl_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *HeartBeat) GetUpTimestamp() int64 {
+func (x *Heartbeat) GetUpTimestamp() int64 {
 	if x != nil {
 		return x.UpTimestamp
 	}
 	return 0
 }
 
-func (x *HeartBeat) GetDownTimestamp() int64 {
+func (x *Heartbeat) GetDownTimestamp() int64 {
 	if x != nil {
 		return x.DownTimestamp
 	}
@@ -216,7 +216,7 @@ var file_pb_ctrl_proto_rawDesc = []byte{
 	0x28, 0x0e, 0x32, 0x10, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x46, 0x72, 0x61, 0x6d, 0x65,
 	0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x62, 0x6f,
 	0x64, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x62, 0x6f, 0x64, 0x79, 0x22, 0x53,
-	0x0a, 0x09, 0x48, 0x65, 0x61, 0x72, 0x74, 0x42, 0x65, 0x61, 0x74, 0x12, 0x20, 0x0a, 0x0b, 0x75,
+	0x0a, 0x09, 0x48, 0x65, 0x61, 0x72, 0x74, 0x62, 0x65, 0x61, 0x74, 0x12, 0x20, 0x0a, 0x0b, 0x75,
 	0x70, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03,
 	0x52, 0x0b, 0x75, 0x70, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x12, 0x24, 0x0a,
 	0x0d, 0x64, 0x6f, 0x77, 0x6e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x18, 0x02,
@@ -241,7 +241,7 @@ func file_pb_ctrl_proto_rawDescGZIP() []byte {
 var file_pb_ctrl_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_pb_ctrl_proto_goTypes = []interface{}{
 	(*Frame)(nil),     // 0: proto.Frame
-	(*HeartBeat)(nil), // 1: proto.HeartBeat
+	(*Heartbeat)(nil), // 1: proto.Heartbeat
 	(*Close)(nil),     // 2: proto.Close
 	(*Maintain)(nil),  // 3: proto.Maintain
 	(FrameType)(0),    // 4: proto.FrameType
@@ -275,7 +275,7 @@ func file_pb_ctrl_proto_init() {
 			}
 		}
 		file_pb_ctrl_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*HeartBeat); i {
+			switch v := v.(*Heartbeat); i {
 			case 0:
 				return &v.state
 			case 1:

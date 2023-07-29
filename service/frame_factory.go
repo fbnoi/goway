@@ -10,7 +10,7 @@ import (
 
 var (
 	framePool     = sync.Pool{New: func() any { return &pb.Frame{} }}
-	heartbeatPool = sync.Pool{New: func() any { return &pb.HeartBeat{} }}
+	heartbeatPool = sync.Pool{New: func() any { return &pb.Heartbeat{} }}
 )
 
 func GetFrame(bs []byte) (*pb.Frame, error) {
@@ -27,12 +27,12 @@ func PutFrame(frame *pb.Frame) {
 	framePool.Put(frame)
 }
 
-func GetHearBeatFrame(frame *pb.Frame) (*pb.HeartBeat, error) {
+func GetHearBeatFrame(frame *pb.Frame) (*pb.Heartbeat, error) {
 	if frame.Type != pb.FrameType_HEARTBEAT {
 		return nil, errors.New("Frame is not a Heartbeat frame")
 	}
 
-	heartbeat := heartbeatPool.Get().(*pb.HeartBeat)
+	heartbeat := heartbeatPool.Get().(*pb.Heartbeat)
 	if err := proto.Unmarshal(frame.Body, heartbeat); err != nil {
 		return nil, err
 	}
@@ -40,6 +40,6 @@ func GetHearBeatFrame(frame *pb.Frame) (*pb.HeartBeat, error) {
 	return heartbeat, nil
 }
 
-func PutHeartBeat(heartbeat *pb.HeartBeat) {
+func PutHeartBeat(heartbeat *pb.Heartbeat) {
 	heartbeatPool.Put(heartbeat)
 }
