@@ -1,20 +1,20 @@
 syntax = "proto3";
-option go_package = "./protobuf;protobuf";
+option go_package = ".;protobuf";
 package proto;
 
 enum FrameType {
 
     // control frame
     OPEN = 0;
-    HEARTBEAT = 0;
-    CLOSE = 1;
-    MAINTAIN = 2;
+    HEARTBEAT = 1;
+    CLOSE = 2;
+    MAINTAIN = 3;
 
     // game message
-    DROP_DOT = 3;
-    DROP_DOT_CONFIRM = 4;
-    DROP_CHECK = 5;
-    DROP_CHECK_CONFIRM = 6;
-    WIN = 7;
-    SURRENDER = 8;
+    DROP_DOT = 4;
+    DROP_DOT_CONFIRM = 5;
+    DROP_CHECK = 6;
+    DROP_CHECK_CONFIRM = 7;
+    WIN = 8;
+    SURRENDER = 9;
 }

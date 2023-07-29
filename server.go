@@ -47,6 +47,7 @@ func NewServer() *Server {
 		handlePong:        func(*Client, []byte) {},
 		handleClose:       func(*Client) {},
 		handleTextMessage: func(*Client, []byte) {},
+		handleByteMessage: func(c *Client, b []byte) {},
 	}
 }
 
@@ -75,7 +76,7 @@ func (s *Server) Run() error {
 			w.Write([]byte(fmt.Sprintf("upgrade error: %s", err)))
 			return
 		}
-		client := NewClient(c)
+		client := NewClient(s, c)
 		s.afterUpgrade(client)
 		defer c.Close()
 		defer s.recovery(client)

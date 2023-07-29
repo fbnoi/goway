@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.31.0
 // 	protoc        v4.23.4
-// source: protobuf/game_message.proto
+// source: pb/game_message.proto
 
 package protobuf
 
@@ -50,11 +50,11 @@ func (x PlayerType) String() string {
 }
 
 func (PlayerType) Descriptor() protoreflect.EnumDescriptor {
-	return file_protobuf_game_message_proto_enumTypes[0].Descriptor()
+	return file_pb_game_message_proto_enumTypes[0].Descriptor()
 }
 
 func (PlayerType) Type() protoreflect.EnumType {
-	return &file_protobuf_game_message_proto_enumTypes[0]
+	return &file_pb_game_message_proto_enumTypes[0]
 }
 
 func (x PlayerType) Number() protoreflect.EnumNumber {
@@ -63,7 +63,7 @@ func (x PlayerType) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use PlayerType.Descriptor instead.
 func (PlayerType) EnumDescriptor() ([]byte, []int) {
-	return file_protobuf_game_message_proto_rawDescGZIP(), []int{0}
+	return file_pb_game_message_proto_rawDescGZIP(), []int{0}
 }
 
 type Ready struct {
@@ -75,7 +75,7 @@ type Ready struct {
 func (x *Ready) Reset() {
 	*x = Ready{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_protobuf_game_message_proto_msgTypes[0]
+		mi := &file_pb_game_message_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -88,7 +88,7 @@ func (x *Ready) String() string {
 func (*Ready) ProtoMessage() {}
 
 func (x *Ready) ProtoReflect() protoreflect.Message {
-	mi := &file_protobuf_game_message_proto_msgTypes[0]
+	mi := &file_pb_game_message_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -101,7 +101,7 @@ func (x *Ready) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Ready.ProtoReflect.Descriptor instead.
 func (*Ready) Descriptor() ([]byte, []int) {
-	return file_protobuf_game_message_proto_rawDescGZIP(), []int{0}
+	return file_pb_game_message_proto_rawDescGZIP(), []int{0}
 }
 
 type Disconected struct {
@@ -113,7 +113,7 @@ type Disconected struct {
 func (x *Disconected) Reset() {
 	*x = Disconected{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_protobuf_game_message_proto_msgTypes[1]
+		mi := &file_pb_game_message_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -126,7 +126,7 @@ func (x *Disconected) String() string {
 func (*Disconected) ProtoMessage() {}
 
 func (x *Disconected) ProtoReflect() protoreflect.Message {
-	mi := &file_protobuf_game_message_proto_msgTypes[1]
+	mi := &file_pb_game_message_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -139,7 +139,7 @@ func (x *Disconected) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Disconected.ProtoReflect.Descriptor instead.
 func (*Disconected) Descriptor() ([]byte, []int) {
-	return file_protobuf_game_message_proto_rawDescGZIP(), []int{1}
+	return file_pb_game_message_proto_rawDescGZIP(), []int{1}
 }
 
 type DropDot struct {
@@ -149,13 +149,13 @@ type DropDot struct {
 
 	X      int32      `protobuf:"varint,1,opt,name=x,proto3" json:"x,omitempty"`
 	Y      int32      `protobuf:"varint,2,opt,name=y,proto3" json:"y,omitempty"`
-	Player PlayerType `protobuf:"varint,3,opt,name=player,proto3,enum=protobuf.PlayerType" json:"player,omitempty"`
+	Player PlayerType `protobuf:"varint,3,opt,name=player,proto3,enum=proto.PlayerType" json:"player,omitempty"`
 }
 
 func (x *DropDot) Reset() {
 	*x = DropDot{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_protobuf_game_message_proto_msgTypes[2]
+		mi := &file_pb_game_message_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -168,7 +168,7 @@ func (x *DropDot) String() string {
 func (*DropDot) ProtoMessage() {}
 
 func (x *DropDot) ProtoReflect() protoreflect.Message {
-	mi := &file_protobuf_game_message_proto_msgTypes[2]
+	mi := &file_pb_game_message_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -181,7 +181,7 @@ func (x *DropDot) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DropDot.ProtoReflect.Descriptor instead.
 func (*DropDot) Descriptor() ([]byte, []int) {
-	return file_protobuf_game_message_proto_rawDescGZIP(), []int{2}
+	return file_pb_game_message_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *DropDot) GetX() int32 {
@@ -212,13 +212,13 @@ type DropDotConfirm struct {
 
 	X      int32      `protobuf:"varint,1,opt,name=x,proto3" json:"x,omitempty"`
 	Y      int32      `protobuf:"varint,2,opt,name=y,proto3" json:"y,omitempty"`
-	Player PlayerType `protobuf:"varint,3,opt,name=player,proto3,enum=protobuf.PlayerType" json:"player,omitempty"`
+	Player PlayerType `protobuf:"varint,3,opt,name=player,proto3,enum=proto.PlayerType" json:"player,omitempty"`
 }
 
 func (x *DropDotConfirm) Reset() {
 	*x = DropDotConfirm{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_protobuf_game_message_proto_msgTypes[3]
+		mi := &file_pb_game_message_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -231,7 +231,7 @@ func (x *DropDotConfirm) String() string {
 func (*DropDotConfirm) ProtoMessage() {}
 
 func (x *DropDotConfirm) ProtoReflect() protoreflect.Message {
-	mi := &file_protobuf_game_message_proto_msgTypes[3]
+	mi := &file_pb_game_message_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -244,7 +244,7 @@ func (x *DropDotConfirm) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DropDotConfirm.ProtoReflect.Descriptor instead.
 func (*DropDotConfirm) Descriptor() ([]byte, []int) {
-	return file_protobuf_game_message_proto_rawDescGZIP(), []int{3}
+	return file_pb_game_message_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *DropDotConfirm) GetX() int32 {
@@ -273,13 +273,13 @@ type DropCheck struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Player PlayerType `protobuf:"varint,1,opt,name=player,proto3,enum=protobuf.PlayerType" json:"player,omitempty"`
+	Player PlayerType `protobuf:"varint,1,opt,name=player,proto3,enum=proto.PlayerType" json:"player,omitempty"`
 }
 
 func (x *DropCheck) Reset() {
 	*x = DropCheck{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_protobuf_game_message_proto_msgTypes[4]
+		mi := &file_pb_game_message_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -292,7 +292,7 @@ func (x *DropCheck) String() string {
 func (*DropCheck) ProtoMessage() {}
 
 func (x *DropCheck) ProtoReflect() protoreflect.Message {
-	mi := &file_protobuf_game_message_proto_msgTypes[4]
+	mi := &file_pb_game_message_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -305,7 +305,7 @@ func (x *DropCheck) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DropCheck.ProtoReflect.Descriptor instead.
 func (*DropCheck) Descriptor() ([]byte, []int) {
-	return file_protobuf_game_message_proto_rawDescGZIP(), []int{4}
+	return file_pb_game_message_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *DropCheck) GetPlayer() PlayerType {
@@ -320,13 +320,13 @@ type DropCheckConfirm struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Player PlayerType `protobuf:"varint,1,opt,name=player,proto3,enum=protobuf.PlayerType" json:"player,omitempty"`
+	Player PlayerType `protobuf:"varint,1,opt,name=player,proto3,enum=proto.PlayerType" json:"player,omitempty"`
 }
 
 func (x *DropCheckConfirm) Reset() {
 	*x = DropCheckConfirm{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_protobuf_game_message_proto_msgTypes[5]
+		mi := &file_pb_game_message_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -339,7 +339,7 @@ func (x *DropCheckConfirm) String() string {
 func (*DropCheckConfirm) ProtoMessage() {}
 
 func (x *DropCheckConfirm) ProtoReflect() protoreflect.Message {
-	mi := &file_protobuf_game_message_proto_msgTypes[5]
+	mi := &file_pb_game_message_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -352,7 +352,7 @@ func (x *DropCheckConfirm) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DropCheckConfirm.ProtoReflect.Descriptor instead.
 func (*DropCheckConfirm) Descriptor() ([]byte, []int) {
-	return file_protobuf_game_message_proto_rawDescGZIP(), []int{5}
+	return file_pb_game_message_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *DropCheckConfirm) GetPlayer() PlayerType {
@@ -367,13 +367,13 @@ type Win struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Player PlayerType `protobuf:"varint,1,opt,name=player,proto3,enum=protobuf.PlayerType" json:"player,omitempty"`
+	Player PlayerType `protobuf:"varint,1,opt,name=player,proto3,enum=proto.PlayerType" json:"player,omitempty"`
 }
 
 func (x *Win) Reset() {
 	*x = Win{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_protobuf_game_message_proto_msgTypes[6]
+		mi := &file_pb_game_message_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -386,7 +386,7 @@ func (x *Win) String() string {
 func (*Win) ProtoMessage() {}
 
 func (x *Win) ProtoReflect() protoreflect.Message {
-	mi := &file_protobuf_game_message_proto_msgTypes[6]
+	mi := &file_pb_game_message_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -399,7 +399,7 @@ func (x *Win) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Win.ProtoReflect.Descriptor instead.
 func (*Win) Descriptor() ([]byte, []int) {
-	return file_protobuf_game_message_proto_rawDescGZIP(), []int{6}
+	return file_pb_game_message_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *Win) GetPlayer() PlayerType {
@@ -414,13 +414,13 @@ type Surrender struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Player PlayerType `protobuf:"varint,1,opt,name=player,proto3,enum=protobuf.PlayerType" json:"player,omitempty"`
+	Player PlayerType `protobuf:"varint,1,opt,name=player,proto3,enum=proto.PlayerType" json:"player,omitempty"`
 }
 
 func (x *Surrender) Reset() {
 	*x = Surrender{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_protobuf_game_message_proto_msgTypes[7]
+		mi := &file_pb_game_message_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -433,7 +433,7 @@ func (x *Surrender) String() string {
 func (*Surrender) ProtoMessage() {}
 
 func (x *Surrender) ProtoReflect() protoreflect.Message {
-	mi := &file_protobuf_game_message_proto_msgTypes[7]
+	mi := &file_pb_game_message_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -446,7 +446,7 @@ func (x *Surrender) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Surrender.ProtoReflect.Descriptor instead.
 func (*Surrender) Descriptor() ([]byte, []int) {
-	return file_protobuf_game_message_proto_rawDescGZIP(), []int{7}
+	return file_pb_game_message_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *Surrender) GetPlayer() PlayerType {
@@ -456,77 +456,75 @@ func (x *Surrender) GetPlayer() PlayerType {
 	return PlayerType_WHITE
 }
 
-var File_protobuf_game_message_proto protoreflect.FileDescriptor
+var File_pb_game_message_proto protoreflect.FileDescriptor
 
-var file_protobuf_game_message_proto_rawDesc = []byte{
-	0x0a, 0x1b, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x67, 0x61, 0x6d, 0x65, 0x5f,
-	0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x08, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x22, 0x07, 0x0a, 0x05, 0x52, 0x65, 0x61, 0x64, 0x79,
-	0x22, 0x0d, 0x0a, 0x0b, 0x44, 0x69, 0x73, 0x63, 0x6f, 0x6e, 0x65, 0x63, 0x74, 0x65, 0x64, 0x22,
-	0x53, 0x0a, 0x07, 0x44, 0x72, 0x6f, 0x70, 0x44, 0x6f, 0x74, 0x12, 0x0c, 0x0a, 0x01, 0x78, 0x18,
+var file_pb_game_message_proto_rawDesc = []byte{
+	0x0a, 0x15, 0x70, 0x62, 0x2f, 0x67, 0x61, 0x6d, 0x65, 0x5f, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67,
+	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x05, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x07,
+	0x0a, 0x05, 0x52, 0x65, 0x61, 0x64, 0x79, 0x22, 0x0d, 0x0a, 0x0b, 0x44, 0x69, 0x73, 0x63, 0x6f,
+	0x6e, 0x65, 0x63, 0x74, 0x65, 0x64, 0x22, 0x50, 0x0a, 0x07, 0x44, 0x72, 0x6f, 0x70, 0x44, 0x6f,
+	0x74, 0x12, 0x0c, 0x0a, 0x01, 0x78, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x01, 0x78, 0x12,
+	0x0c, 0x0a, 0x01, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x01, 0x79, 0x12, 0x29, 0x0a,
+	0x06, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x11, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65,
+	0x52, 0x06, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x22, 0x57, 0x0a, 0x0e, 0x44, 0x72, 0x6f, 0x70,
+	0x44, 0x6f, 0x74, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x72, 0x6d, 0x12, 0x0c, 0x0a, 0x01, 0x78, 0x18,
 	0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x01, 0x78, 0x12, 0x0c, 0x0a, 0x01, 0x79, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x05, 0x52, 0x01, 0x79, 0x12, 0x2c, 0x0a, 0x06, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72,
-	0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x14, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
-	0x66, 0x2e, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x52, 0x06, 0x70, 0x6c,
-	0x61, 0x79, 0x65, 0x72, 0x22, 0x5a, 0x0a, 0x0e, 0x44, 0x72, 0x6f, 0x70, 0x44, 0x6f, 0x74, 0x43,
-	0x6f, 0x6e, 0x66, 0x69, 0x72, 0x6d, 0x12, 0x0c, 0x0a, 0x01, 0x78, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x05, 0x52, 0x01, 0x78, 0x12, 0x0c, 0x0a, 0x01, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52,
-	0x01, 0x79, 0x12, 0x2c, 0x0a, 0x06, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x18, 0x03, 0x20, 0x01,
-	0x28, 0x0e, 0x32, 0x14, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x50, 0x6c,
-	0x61, 0x79, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x52, 0x06, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72,
-	0x22, 0x39, 0x0a, 0x09, 0x44, 0x72, 0x6f, 0x70, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x12, 0x2c, 0x0a,
-	0x06, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x14, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x54,
-	0x79, 0x70, 0x65, 0x52, 0x06, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x22, 0x40, 0x0a, 0x10, 0x44,
-	0x72, 0x6f, 0x70, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x72, 0x6d, 0x12,
-	0x2c, 0x0a, 0x06, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32,
-	0x14, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x50, 0x6c, 0x61, 0x79, 0x65,
-	0x72, 0x54, 0x79, 0x70, 0x65, 0x52, 0x06, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x22, 0x33, 0x0a,
-	0x03, 0x57, 0x69, 0x6e, 0x12, 0x2c, 0x0a, 0x06, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x0e, 0x32, 0x14, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e,
+	0x01, 0x28, 0x05, 0x52, 0x01, 0x79, 0x12, 0x29, 0x0a, 0x06, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x11, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x50,
+	0x6c, 0x61, 0x79, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x52, 0x06, 0x70, 0x6c, 0x61, 0x79, 0x65,
+	0x72, 0x22, 0x36, 0x0a, 0x09, 0x44, 0x72, 0x6f, 0x70, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x12, 0x29,
+	0x0a, 0x06, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x11,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x54, 0x79, 0x70,
+	0x65, 0x52, 0x06, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x22, 0x3d, 0x0a, 0x10, 0x44, 0x72, 0x6f,
+	0x70, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x72, 0x6d, 0x12, 0x29, 0x0a,
+	0x06, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x11, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65,
+	0x52, 0x06, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x22, 0x30, 0x0a, 0x03, 0x57, 0x69, 0x6e, 0x12,
+	0x29, 0x0a, 0x06, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32,
+	0x11, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x54, 0x79,
+	0x70, 0x65, 0x52, 0x06, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x22, 0x36, 0x0a, 0x09, 0x53, 0x75,
+	0x72, 0x72, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x12, 0x29, 0x0a, 0x06, 0x70, 0x6c, 0x61, 0x79, 0x65,
+	0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x11, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e,
 	0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x52, 0x06, 0x70, 0x6c, 0x61, 0x79,
-	0x65, 0x72, 0x22, 0x39, 0x0a, 0x09, 0x53, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x12,
-	0x2c, 0x0a, 0x06, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32,
-	0x14, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x50, 0x6c, 0x61, 0x79, 0x65,
-	0x72, 0x54, 0x79, 0x70, 0x65, 0x52, 0x06, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x2a, 0x22, 0x0a,
-	0x0a, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x12, 0x09, 0x0a, 0x05, 0x57,
-	0x48, 0x49, 0x54, 0x45, 0x10, 0x00, 0x12, 0x09, 0x0a, 0x05, 0x42, 0x4c, 0x41, 0x43, 0x4b, 0x10,
-	0x01, 0x42, 0x15, 0x5a, 0x13, 0x2e, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x3b,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x72, 0x2a, 0x22, 0x0a, 0x0a, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65,
+	0x12, 0x09, 0x0a, 0x05, 0x57, 0x48, 0x49, 0x54, 0x45, 0x10, 0x00, 0x12, 0x09, 0x0a, 0x05, 0x42,
+	0x4c, 0x41, 0x43, 0x4b, 0x10, 0x01, 0x42, 0x0c, 0x5a, 0x0a, 0x2e, 0x3b, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x75, 0x66, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
-	file_protobuf_game_message_proto_rawDescOnce sync.Once
-	file_protobuf_game_message_proto_rawDescData = file_protobuf_game_message_proto_rawDesc
+	file_pb_game_message_proto_rawDescOnce sync.Once
+	file_pb_game_message_proto_rawDescData = file_pb_game_message_proto_rawDesc
 )
 
-func file_protobuf_game_message_proto_rawDescGZIP() []byte {
-	file_protobuf_game_message_proto_rawDescOnce.Do(func() {
-		file_protobuf_game_message_proto_rawDescData = protoimpl.X.CompressGZIP(file_protobuf_game_message_proto_rawDescData)
+func file_pb_game_message_proto_rawDescGZIP() []byte {
+	file_pb_game_message_proto_rawDescOnce.Do(func() {
+		file_pb_game_message_proto_rawDescData = protoimpl.X.CompressGZIP(file_pb_game_message_proto_rawDescData)
 	})
-	return file_protobuf_game_message_proto_rawDescData
+	return file_pb_game_message_proto_rawDescData
 }
 
-var file_protobuf_game_message_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_protobuf_game_message_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
-var file_protobuf_game_message_proto_goTypes = []interface{}{
-	(PlayerType)(0),          // 0: protobuf.PlayerType
-	(*Ready)(nil),            // 1: protobuf.Ready
-	(*Disconected)(nil),      // 2: protobuf.Disconected
-	(*DropDot)(nil),          // 3: protobuf.DropDot
-	(*DropDotConfirm)(nil),   // 4: protobuf.DropDotConfirm
-	(*DropCheck)(nil),        // 5: protobuf.DropCheck
-	(*DropCheckConfirm)(nil), // 6: protobuf.DropCheckConfirm
-	(*Win)(nil),              // 7: protobuf.Win
-	(*Surrender)(nil),        // 8: protobuf.Surrender
+var file_pb_game_message_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_pb_game_message_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_pb_game_message_proto_goTypes = []interface{}{
+	(PlayerType)(0),          // 0: proto.PlayerType
+	(*Ready)(nil),            // 1: proto.Ready
+	(*Disconected)(nil),      // 2: proto.Disconected
+	(*DropDot)(nil),          // 3: proto.DropDot
+	(*DropDotConfirm)(nil),   // 4: proto.DropDotConfirm
+	(*DropCheck)(nil),        // 5: proto.DropCheck
+	(*DropCheckConfirm)(nil), // 6: proto.DropCheckConfirm
+	(*Win)(nil),              // 7: proto.Win
+	(*Surrender)(nil),        // 8: proto.Surrender
 }
-var file_protobuf_game_message_proto_depIdxs = []int32{
-	0, // 0: protobuf.DropDot.player:type_name -> protobuf.PlayerType
-	0, // 1: protobuf.DropDotConfirm.player:type_name -> protobuf.PlayerType
-	0, // 2: protobuf.DropCheck.player:type_name -> protobuf.PlayerType
-	0, // 3: protobuf.DropCheckConfirm.player:type_name -> protobuf.PlayerType
-	0, // 4: protobuf.Win.player:type_name -> protobuf.PlayerType
-	0, // 5: protobuf.Surrender.player:type_name -> protobuf.PlayerType
+var file_pb_game_message_proto_depIdxs = []int32{
+	0, // 0: proto.DropDot.player:type_name -> proto.PlayerType
+	0, // 1: proto.DropDotConfirm.player:type_name -> proto.PlayerType
+	0, // 2: proto.DropCheck.player:type_name -> proto.PlayerType
+	0, // 3: proto.DropCheckConfirm.player:type_name -> proto.PlayerType
+	0, // 4: proto.Win.player:type_name -> proto.PlayerType
+	0, // 5: proto.Surrender.player:type_name -> proto.PlayerType
 	6, // [6:6] is the sub-list for method output_type
 	6, // [6:6] is the sub-list for method input_type
 	6, // [6:6] is the sub-list for extension type_name
@@ -534,13 +532,13 @@ var file_protobuf_game_message_proto_depIdxs = []int32{
 	0, // [0:6] is the sub-list for field type_name
 }
 
-func init() { file_protobuf_game_message_proto_init() }
-func file_protobuf_game_message_proto_init() {
-	if File_protobuf_game_message_proto != nil {
+func init() { file_pb_game_message_proto_init() }
+func file_pb_game_message_proto_init() {
+	if File_pb_game_message_proto != nil {
 		return
 	}
 	if !protoimpl.UnsafeEnabled {
-		file_protobuf_game_message_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+		file_pb_game_message_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Ready); i {
 			case 0:
 				return &v.state
@@ -552,7 +550,7 @@ func file_protobuf_game_message_proto_init() {
 				return nil
 			}
 		}
-		file_protobuf_game_message_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+		file_pb_game_message_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Disconected); i {
 			case 0:
 				return &v.state
@@ -564,7 +562,7 @@ func file_protobuf_game_message_proto_init() {
 				return nil
 			}
 		}
-		file_protobuf_game_message_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+		file_pb_game_message_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DropDot); i {
 			case 0:
 				return &v.state
@@ -576,7 +574,7 @@ func file_protobuf_game_message_proto_init() {
 				return nil
 			}
 		}
-		file_protobuf_game_message_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+		file_pb_game_message_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DropDotConfirm); i {
 			case 0:
 				return &v.state
@@ -588,7 +586,7 @@ func file_protobuf_game_message_proto_init() {
 				return nil
 			}
 		}
-		file_protobuf_game_message_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+		file_pb_game_message_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DropCheck); i {
 			case 0:
 				return &v.state
@@ -600,7 +598,7 @@ func file_protobuf_game_message_proto_init() {
 				return nil
 			}
 		}
-		file_protobuf_game_message_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+		file_pb_game_message_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DropCheckConfirm); i {
 			case 0:
 				return &v.state
@@ -612,7 +610,7 @@ func file_protobuf_game_message_proto_init() {
 				return nil
 			}
 		}
-		file_protobuf_game_message_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+		file_pb_game_message_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Win); i {
 			case 0:
 				return &v.state
@@ -624,7 +622,7 @@ func file_protobuf_game_message_proto_init() {
 				return nil
 			}
 		}
-		file_protobuf_game_message_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+		file_pb_game_message_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Surrender); i {
 			case 0:
 				return &v.state
@@ -641,19 +639,19 @@ func file_protobuf_game_message_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_protobuf_game_message_proto_rawDesc,
+			RawDescriptor: file_pb_game_message_proto_rawDesc,
 			NumEnums:      1,
 			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_protobuf_game_message_proto_goTypes,
-		DependencyIndexes: file_protobuf_game_message_proto_depIdxs,
-		EnumInfos:         file_protobuf_game_message_proto_enumTypes,
-		MessageInfos:      file_protobuf_game_message_proto_msgTypes,
+		GoTypes:           file_pb_game_message_proto_goTypes,
+		DependencyIndexes: file_pb_game_message_proto_depIdxs,
+		EnumInfos:         file_pb_game_message_proto_enumTypes,
+		MessageInfos:      file_pb_game_message_proto_msgTypes,
 	}.Build()
-	File_protobuf_game_message_proto = out.File
-	file_protobuf_game_message_proto_rawDesc = nil
-	file_protobuf_game_message_proto_goTypes = nil
-	file_protobuf_game_message_proto_depIdxs = nil
+	File_pb_game_message_proto = out.File
+	file_pb_game_message_proto_rawDesc = nil
+	file_pb_game_message_proto_goTypes = nil
+	file_pb_game_message_proto_depIdxs = nil
 }

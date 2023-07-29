@@ -1,6 +1,6 @@
 syntax = "proto3";
-option go_package = "./protobuf;protobuf";
-import "proto/frame_type.proto";
+option go_package = ".;protobuf";
+import "pb/frame_type.proto";
 
 package proto;
 

@@ -25,8 +25,13 @@ const (
 	DisConnected = SocketStatus(2)
 )
 
-func NewClient(conn *websocket.Conn) *Client {
-	return &Client{conn: conn, Color: Green}
+func NewClient(serve *Server, conn *websocket.Conn) *Client {
+	return &Client{
+		conn:  conn,
+		Color: Green,
+		bus:   NewBus(),
+		serve: serve,
+	}
 }
 
 type Client struct {
@@ -37,24 +42,30 @@ type Client struct {
 	LastPingAt time.Time
 	Color      Color
 
+	bus   Bus
+	serve *Server
+
 	sync.RWMutex
 }
 
-func (c *Client) Send(mt int, message []byte) error {
-	c.RLock()
-	defer c.RUnlock()
-	if c.status != Connected {
-		return errors.New("Websocket is disconnected")
-	}
-
-	return c.conn.WriteMessage(mt, message)
+func (c *Client) Publish(f *pb.Frame) {
+	c.bus.Publish(f)
+	c.bus.WaitAsync()
 }
 
-func (c *Client) SendFrame(frame *pb.Frame) error {
+func (c *Client) Subscribe(typ pb.FrameType, handleFunc func(f *pb.Frame)) {
+	c.bus.SubscribeAsync(typ, handleFunc, false)
+}
+
+func (c *Client) SubscribeOnce(typ pb.FrameType, handleFunc func(f *pb.Frame)) {
+	c.bus.SubscribeOnceAsync(typ, handleFunc)
+}
+
+func (c *Client) Send(frame *pb.Frame) error {
 	if bs, err := proto.Marshal(frame); err != nil {
 		return err
 	} else {
-		return c.Send(2, bs)
+		return c.send(2, bs)
 	}
 }
 
@@ -66,14 +77,12 @@ func (c *Client) Close() error {
 	}
 	c.status = DisConnected
 	c.conn.WriteControl(websocket.CloseMessage, nil, time.Now().Add(time.Second))
-
 	return c.conn.Close()
 }
 
 func (c *Client) Status() SocketStatus {
 	c.RLock()
 	defer c.RUnlock()
-
 	return c.status
 }
 
@@ -82,7 +91,6 @@ func (c *Client) Set(name string, val any) {
 	defer c.Unlock()
 	if kv, ok := c.Get(name); ok {
 		kv.Value = val
-
 		return
 	}
 	c.session = append(c.session, &KV[any]{Key: name, Value: val})
@@ -96,6 +104,14 @@ func (c *Client) Get(name string) (*KV[any], bool) {
 			return kv, true
 		}
 	}
-
 	return nil, false
+}
+
+func (c *Client) send(mt int, message []byte) error {
+	c.RLock()
+	defer c.RUnlock()
+	if c.status != Connected {
+		return errors.New("Websocket is disconnected")
+	}
+	return c.conn.WriteMessage(mt, message)
 }

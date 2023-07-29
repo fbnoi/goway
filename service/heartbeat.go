@@ -21,7 +21,7 @@ func doOnce() {
 	})
 }
 
-func HealthyScan(client *gw.Client) {
+func ScanHealthy(client *gw.Client) {
 	doOnce()
 	healthyScanScheduler.Every(1).Second().Do(func() {
 		checkHealth(client)
@@ -39,7 +39,7 @@ func OnPing(client *gw.Client, frame *pb.Frame) error {
 	if frame.Body, err = proto.Marshal(heartbeat); err != nil {
 		return err
 	}
-	client.SendFrame(frame)
+	client.Send(frame)
 	return nil
 }
 

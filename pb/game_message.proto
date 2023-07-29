@@ -1,5 +1,5 @@
 syntax = "proto3";
-option go_package = "./protobuf;protobuf";
+option go_package = ".;protobuf";
 package proto;
 
 enum PlayerType {
