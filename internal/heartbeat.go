@@ -1,4 +1,4 @@
-package service
+package internal
 
 import (
 	gw "flynoob/goway"
@@ -21,7 +21,7 @@ func doOnce() {
 	})
 }
 
-func ScanHealthy(client *gw.Client) {
+func CheckHealthy(client *gw.Client) {
 	doOnce()
 	healthyScanScheduler.Every(1).Second().Do(func() {
 		checkHealth(client)

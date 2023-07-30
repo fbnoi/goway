@@ -7,31 +7,51 @@ enum PlayerType {
     BLACK = 1;
 }
 
-message Ready {}
-message Disconected {}
+// Up message
+message Matching {}
+// Down message
+message MatchingConfirm {}
 
+// Down message
+message Matched {
+    PlayerType player = 1;
+}
+// Up message
+message MatchedConfirm {}
+
+// Down message
+message WaitingOpponentConfirmed{}
+message OpponentConfirmed{}
+
+// Up message
 message DropDot {
     int32 x = 1;
     int32 y = 2;
     PlayerType player = 3;
 }
+// Down message
 message DropDotConfirm {
     int32 x = 1;
     int32 y = 2;
     PlayerType player = 3;
 }
 
+// Up message
 message DropCheck {
     PlayerType player = 1;
 }
+// Down message
 message DropCheckConfirm {
     PlayerType player = 1;
 }
 
+// Down message
 message Win {
     PlayerType player = 1;
 }
 
+// Up message
+// Down message
 message Surrender {
     PlayerType player = 1;
 }

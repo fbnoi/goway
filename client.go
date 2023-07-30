@@ -27,19 +27,13 @@ const (
 )
 
 func NewClient(serve *Server, conn *websocket.Conn, uid string) *Client {
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, jwt.MapClaims{
-		"iss": serve.endpoint,
-		"aud": uid,
-		"nbf": time.Now().UnixMilli(),
-		"iat": time.Now().UnixMilli(),
-	})
 	return &Client{
 		conn:      conn,
 		Color:     Green,
 		bus:       NewBus(),
 		serve:     serve,
 		status:    Connected,
-		authToken: token,
+		authToken: serve.GenClientToken(uid),
 	}
 }
 

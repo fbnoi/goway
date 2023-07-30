@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
 )
@@ -20,7 +21,7 @@ var (
 	enableCompression  bool
 )
 
-func parseFlag() {
+func addFlag() {
 	flag.StringVar(&endpoint, "endpoint", "HZ-WH-1", "set endpoint name for server")
 	flag.StringVar(&addr, "addr", ":5678", "set addr for server")
 	flag.Int64Var(&handleShakeTimeout, "timeout", 3000, "set connection timeout")
@@ -30,7 +31,7 @@ func parseFlag() {
 }
 
 func NewServer() *Server {
-	parseFlag()
+	addFlag()
 	return &Server{
 		upgrader: websocket.Upgrader{
 			HandshakeTimeout:  time.Millisecond * time.Duration(handleShakeTimeout),
@@ -72,6 +73,16 @@ type Server struct {
 
 func (s *Server) Endpoint() string {
 	return s.endpoint
+}
+
+func (s *Server) GenClientToken(uid string) *jwt.Token {
+	return jwt.NewWithClaims(jwt.SigningMethodES256, jwt.MapClaims{
+		"iss": s.endpoint,
+		"sub": "client_auth",
+		"aud": uid,
+		"nbf": time.Now().UnixMilli(),
+		"iat": time.Now().UnixMilli(),
+	})
 }
 
 func (s *Server) Run() error {

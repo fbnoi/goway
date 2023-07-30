@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	"flynoob/goway/internal"
 	pb "flynoob/goway/protobuf"
-	"flynoob/goway/service"
 )
 
 func main() {
@@ -18,19 +18,19 @@ func main() {
 	serve.SetAfterUpgradeHandler(func(c *goway.Client) {
 		log.Println("Connection Established")
 		c.Subscribe(pb.FrameType_HEARTBEAT, func(f *pb.Frame) {
-			if err := service.OnPing(c, f); err != nil {
+			if err := internal.OnPing(c, f); err != nil {
 				log.Printf("Ping error: %s\n", err)
 			}
 		})
-		service.ScanHealthy(c)
+		internal.CheckHealthy(c)
 	})
 	serve.SetByteMessageHandler(func(c *goway.Client, bs []byte) {
 		go func() {
-			if frame, err := service.GetFrame(bs); err != nil {
+			if frame, err := internal.GetFrame(bs); err != nil {
 				log.Println(err)
 			} else {
 				c.Publish(frame)
-				service.PutFrame(frame)
+				internal.PutFrame(frame)
 			}
 		}()
 	})
