@@ -5,6 +5,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
 	"google.golang.org/protobuf/proto"
@@ -25,13 +26,20 @@ const (
 	DisConnected = SocketStatus(2)
 )
 
-func NewClient(serve *Server, conn *websocket.Conn) *Client {
+func NewClient(serve *Server, conn *websocket.Conn, uid string) *Client {
+	token := jwt.NewWithClaims(jwt.SigningMethodES256, jwt.MapClaims{
+		"iss": serve.endpoint,
+		"aud": uid,
+		"nbf": time.Now().UnixMilli(),
+		"iat": time.Now().UnixMilli(),
+	})
 	return &Client{
-		conn:   conn,
-		Color:  Green,
-		bus:    NewBus(),
-		serve:  serve,
-		status: Connected,
+		conn:      conn,
+		Color:     Green,
+		bus:       NewBus(),
+		serve:     serve,
+		status:    Connected,
+		authToken: token,
 	}
 }
 
@@ -39,12 +47,13 @@ type Client struct {
 	conn    *websocket.Conn
 	session []*KV[any]
 	status  SocketStatus
+	serve   *Server
 
 	LastPingAt time.Time
 	Color      Color
+	bus        Bus
 
-	bus   Bus
-	serve *Server
+	authToken *jwt.Token
 
 	sync.RWMutex
 }
@@ -66,7 +75,7 @@ func (c *Client) Send(frame *pb.Frame) error {
 	if bs, err := proto.Marshal(frame); err != nil {
 		return err
 	} else {
-		return c.send(2, bs)
+		return c.doSend(2, bs)
 	}
 }
 
@@ -108,7 +117,7 @@ func (c *Client) Get(name string) (*KV[any], bool) {
 	return nil, false
 }
 
-func (c *Client) send(mt int, message []byte) error {
+func (c *Client) doSend(mt int, message []byte) error {
 	c.RLock()
 	defer c.RUnlock()
 	if c.status != Connected {
