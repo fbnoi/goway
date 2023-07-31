@@ -39,7 +39,7 @@ func NewClient(serve *Server, conn *websocket.Conn, uid string) *Client {
 
 type Client struct {
 	conn    *websocket.Conn
-	session []*KV[any]
+	session map[string]any
 	status  SocketStatus
 	serve   *Server
 
@@ -93,22 +93,20 @@ func (c *Client) Status() SocketStatus {
 func (c *Client) Set(name string, val any) {
 	c.Lock()
 	defer c.Unlock()
-	if kv, ok := c.Get(name); ok {
-		kv.Value = val
-		return
-	}
-	c.session = append(c.session, &KV[any]{Key: name, Value: val})
+	c.session[name] = val
 }
 
-func (c *Client) Get(name string) (*KV[any], bool) {
+func (c *Client) Get(name string) (val any, ok bool) {
 	c.RLock()
 	defer c.RUnlock()
-	for _, kv := range c.session {
-		if kv.Key == name {
-			return kv, true
-		}
-	}
-	return nil, false
+	val, ok = c.session[name]
+	return
+}
+
+func (c *Client) Delete(name string) {
+	c.Lock()
+	defer c.Unlock()
+	delete(c.session, name)
 }
 
 func (c *Client) doSend(mt int, message []byte) error {

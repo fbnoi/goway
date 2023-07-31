@@ -11,17 +11,20 @@ enum PlayerType {
 message Matching {}
 // Down message
 message MatchingConfirm {}
+// Down message
+message MatchingError {
+    int64 code = 1;
+    string message = 2;
+}
 
 // Down message
 message Matched {
     PlayerType player = 1;
 }
 // Up message
-message MatchedConfirm {}
-
-// Down message
-message WaitingOpponentConfirmed{}
-message OpponentConfirmed{}
+message MatchedConfirm {
+    PlayerType player = 1;
+}
 
 // Up message
 message DropDot {

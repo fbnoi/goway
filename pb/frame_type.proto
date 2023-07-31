@@ -11,10 +11,17 @@ enum FrameType {
     MAINTAIN = 3;
 
     // game message
-    DROP_DOT = 4;
-    DROP_DOT_CONFIRM = 5;
-    DROP_CHECK = 6;
-    DROP_CHECK_CONFIRM = 7;
-    WIN = 8;
-    SURRENDER = 9;
+    MATCHING = 10;
+    MATCHINGCONFIRM = 11;
+    MATCHINGERROR = 12;
+    MATCHED = 13;
+    MATCHEDCONFIRM = 14;
+
+
+    // DROP_DOT = 5;
+    // DROP_DOT_CONFIRM = 6;
+    // DROP_CHECK = 7;
+    // DROP_CHECK_CONFIRM = 8;
+    // WIN = 9;
+    // SURRENDER = 10;
 }

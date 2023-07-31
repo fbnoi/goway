@@ -26,7 +26,7 @@ func main() {
 	})
 	serve.SetByteMessageHandler(func(c *goway.Client, bs []byte) {
 		go func() {
-			if frame, err := internal.GetFrame(bs); err != nil {
+			if frame, err := internal.GetFrameFromBytes(bs); err != nil {
 				log.Println(err)
 			} else {
 				c.Publish(frame)
