@@ -20,61 +20,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Frame struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Type FrameType `protobuf:"varint,1,opt,name=type,proto3,enum=proto.FrameType" json:"type,omitempty"`
-	Body []byte    `protobuf:"bytes,2,opt,name=body,proto3" json:"body,omitempty"`
-}
-
-func (x *Frame) Reset() {
-	*x = Frame{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_pb_ctrl_proto_msgTypes[0]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *Frame) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Frame) ProtoMessage() {}
-
-func (x *Frame) ProtoReflect() protoreflect.Message {
-	mi := &file_pb_ctrl_proto_msgTypes[0]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Frame.ProtoReflect.Descriptor instead.
-func (*Frame) Descriptor() ([]byte, []int) {
-	return file_pb_ctrl_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *Frame) GetType() FrameType {
-	if x != nil {
-		return x.Type
-	}
-	return FrameType_OPEN
-}
-
-func (x *Frame) GetBody() []byte {
-	if x != nil {
-		return x.Body
-	}
-	return nil
-}
-
 type Heartbeat struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -87,7 +32,7 @@ type Heartbeat struct {
 func (x *Heartbeat) Reset() {
 	*x = Heartbeat{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pb_ctrl_proto_msgTypes[1]
+		mi := &file_pb_ctrl_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -100,7 +45,7 @@ func (x *Heartbeat) String() string {
 func (*Heartbeat) ProtoMessage() {}
 
 func (x *Heartbeat) ProtoReflect() protoreflect.Message {
-	mi := &file_pb_ctrl_proto_msgTypes[1]
+	mi := &file_pb_ctrl_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -113,7 +58,7 @@ func (x *Heartbeat) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Heartbeat.ProtoReflect.Descriptor instead.
 func (*Heartbeat) Descriptor() ([]byte, []int) {
-	return file_pb_ctrl_proto_rawDescGZIP(), []int{1}
+	return file_pb_ctrl_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Heartbeat) GetUpTimestamp() int64 {
@@ -139,7 +84,7 @@ type Close struct {
 func (x *Close) Reset() {
 	*x = Close{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pb_ctrl_proto_msgTypes[2]
+		mi := &file_pb_ctrl_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -152,7 +97,7 @@ func (x *Close) String() string {
 func (*Close) ProtoMessage() {}
 
 func (x *Close) ProtoReflect() protoreflect.Message {
-	mi := &file_pb_ctrl_proto_msgTypes[2]
+	mi := &file_pb_ctrl_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -165,7 +110,7 @@ func (x *Close) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Close.ProtoReflect.Descriptor instead.
 func (*Close) Descriptor() ([]byte, []int) {
-	return file_pb_ctrl_proto_rawDescGZIP(), []int{2}
+	return file_pb_ctrl_proto_rawDescGZIP(), []int{1}
 }
 
 type Maintain struct {
@@ -177,7 +122,7 @@ type Maintain struct {
 func (x *Maintain) Reset() {
 	*x = Maintain{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pb_ctrl_proto_msgTypes[3]
+		mi := &file_pb_ctrl_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -190,7 +135,7 @@ func (x *Maintain) String() string {
 func (*Maintain) ProtoMessage() {}
 
 func (x *Maintain) ProtoReflect() protoreflect.Message {
-	mi := &file_pb_ctrl_proto_msgTypes[3]
+	mi := &file_pb_ctrl_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -203,27 +148,22 @@ func (x *Maintain) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Maintain.ProtoReflect.Descriptor instead.
 func (*Maintain) Descriptor() ([]byte, []int) {
-	return file_pb_ctrl_proto_rawDescGZIP(), []int{3}
+	return file_pb_ctrl_proto_rawDescGZIP(), []int{2}
 }
 
 var File_pb_ctrl_proto protoreflect.FileDescriptor
 
 var file_pb_ctrl_proto_rawDesc = []byte{
 	0x0a, 0x0d, 0x70, 0x62, 0x2f, 0x63, 0x74, 0x72, 0x6c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12,
-	0x05, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x13, 0x70, 0x62, 0x2f, 0x66, 0x72, 0x61, 0x6d, 0x65,
-	0x5f, 0x74, 0x79, 0x70, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x41, 0x0a, 0x05, 0x46,
-	0x72, 0x61, 0x6d, 0x65, 0x12, 0x24, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x0e, 0x32, 0x10, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x46, 0x72, 0x61, 0x6d, 0x65,
-	0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x62, 0x6f,
-	0x64, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x62, 0x6f, 0x64, 0x79, 0x22, 0x53,
-	0x0a, 0x09, 0x48, 0x65, 0x61, 0x72, 0x74, 0x62, 0x65, 0x61, 0x74, 0x12, 0x20, 0x0a, 0x0b, 0x75,
-	0x70, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03,
-	0x52, 0x0b, 0x75, 0x70, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x12, 0x24, 0x0a,
-	0x0d, 0x64, 0x6f, 0x77, 0x6e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x03, 0x52, 0x0d, 0x64, 0x6f, 0x77, 0x6e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74,
-	0x61, 0x6d, 0x70, 0x22, 0x07, 0x0a, 0x05, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x22, 0x0a, 0x0a, 0x08,
-	0x4d, 0x61, 0x69, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x42, 0x0c, 0x5a, 0x0a, 0x2e, 0x3b, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x05, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x53, 0x0a, 0x09, 0x48, 0x65, 0x61, 0x72, 0x74, 0x62,
+	0x65, 0x61, 0x74, 0x12, 0x20, 0x0a, 0x0b, 0x75, 0x70, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61,
+	0x6d, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0b, 0x75, 0x70, 0x54, 0x69, 0x6d, 0x65,
+	0x73, 0x74, 0x61, 0x6d, 0x70, 0x12, 0x24, 0x0a, 0x0d, 0x64, 0x6f, 0x77, 0x6e, 0x54, 0x69, 0x6d,
+	0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0d, 0x64, 0x6f,
+	0x77, 0x6e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x22, 0x07, 0x0a, 0x05, 0x43,
+	0x6c, 0x6f, 0x73, 0x65, 0x22, 0x0a, 0x0a, 0x08, 0x4d, 0x61, 0x69, 0x6e, 0x74, 0x61, 0x69, 0x6e,
+	0x42, 0x0c, 0x5a, 0x0a, 0x2e, 0x3b, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -238,21 +178,18 @@ func file_pb_ctrl_proto_rawDescGZIP() []byte {
 	return file_pb_ctrl_proto_rawDescData
 }
 
-var file_pb_ctrl_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_pb_ctrl_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_pb_ctrl_proto_goTypes = []interface{}{
-	(*Frame)(nil),     // 0: proto.Frame
-	(*Heartbeat)(nil), // 1: proto.Heartbeat
-	(*Close)(nil),     // 2: proto.Close
-	(*Maintain)(nil),  // 3: proto.Maintain
-	(FrameType)(0),    // 4: proto.FrameType
+	(*Heartbeat)(nil), // 0: proto.Heartbeat
+	(*Close)(nil),     // 1: proto.Close
+	(*Maintain)(nil),  // 2: proto.Maintain
 }
 var file_pb_ctrl_proto_depIdxs = []int32{
-	4, // 0: proto.Frame.type:type_name -> proto.FrameType
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	0, // [0:0] is the sub-list for method output_type
+	0, // [0:0] is the sub-list for method input_type
+	0, // [0:0] is the sub-list for extension type_name
+	0, // [0:0] is the sub-list for extension extendee
+	0, // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_pb_ctrl_proto_init() }
@@ -260,21 +197,8 @@ func file_pb_ctrl_proto_init() {
 	if File_pb_ctrl_proto != nil {
 		return
 	}
-	file_pb_frame_type_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_pb_ctrl_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Frame); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_pb_ctrl_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Heartbeat); i {
 			case 0:
 				return &v.state
@@ -286,7 +210,7 @@ func file_pb_ctrl_proto_init() {
 				return nil
 			}
 		}
-		file_pb_ctrl_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+		file_pb_ctrl_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Close); i {
 			case 0:
 				return &v.state
@@ -298,7 +222,7 @@ func file_pb_ctrl_proto_init() {
 				return nil
 			}
 		}
-		file_pb_ctrl_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+		file_pb_ctrl_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Maintain); i {
 			case 0:
 				return &v.state
@@ -317,7 +241,7 @@ func file_pb_ctrl_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_pb_ctrl_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -6,11 +6,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-var factories = map[string]*factory[*Heartbeat]{
-	"heart_beat": newFactory[*Heartbeat](),
-}
-
-func newFactory[T proto.Message]() *factory[T] {
+func NewFactory[T proto.Message]() *factory[T] {
 	return &factory[T]{
 		pool: sync.Pool{
 			New: func() any {

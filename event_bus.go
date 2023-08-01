@@ -1,29 +1,29 @@
 package goway
 
 import (
-	pb "flynoob/goway/protobuf"
 	"reflect"
 	"sync"
 
 	"github.com/pkg/errors"
+	"google.golang.org/protobuf/proto"
 )
 
-type HandleFunc func(*pb.Frame)
+type HandleFunc func(proto.Message)
 
 type BusSubscriber interface {
-	Subscribe(typ pb.FrameType, fn HandleFunc)
-	SubscribeAsync(typ pb.FrameType, fn HandleFunc, transactional bool)
-	SubscribeOnce(typ pb.FrameType, fn HandleFunc)
-	SubscribeOnceAsync(typ pb.FrameType, fn HandleFunc)
-	Unsubscribe(typ pb.FrameType, fn HandleFunc) error
+	Subscribe(typ proto.Message, fn HandleFunc)
+	SubscribeAsync(typ proto.Message, fn HandleFunc, transactional bool)
+	SubscribeOnce(typ proto.Message, fn HandleFunc)
+	SubscribeOnceAsync(typ proto.Message, fn HandleFunc)
+	Unsubscribe(typ proto.Message, fn HandleFunc) error
 }
 
 type BusPublisher interface {
-	Publish(*pb.Frame)
+	Publish(proto.Message)
 }
 
 type BusController interface {
-	HasCallback(typ pb.FrameType) bool
+	HasCallback(typ proto.Message) bool
 	WaitAsync()
 }
 
@@ -35,7 +35,7 @@ type Bus interface {
 
 func NewBus() Bus {
 	b := &EventBus{
-		make(map[pb.FrameType][]*eventHandler),
+		make(map[string][]*eventHandler),
 		sync.RWMutex{},
 		sync.WaitGroup{},
 	}
@@ -43,7 +43,7 @@ func NewBus() Bus {
 }
 
 type EventBus struct {
-	handlers map[pb.FrameType][]*eventHandler
+	handlers map[string][]*eventHandler
 	lock     sync.RWMutex
 	wg       sync.WaitGroup
 }
@@ -56,30 +56,30 @@ type eventHandler struct {
 	sync.Mutex
 }
 
-func (bus *EventBus) doSubscribe(typ pb.FrameType, handler *eventHandler) {
+func (bus *EventBus) doSubscribe(typ proto.Message, handler *eventHandler) {
 	bus.lock.Lock()
 	defer bus.lock.Unlock()
 
 	bus.handlers[typ] = append(bus.handlers[typ], handler)
 }
 
-func (bus *EventBus) Subscribe(typ pb.FrameType, fn HandleFunc) {
+func (bus *EventBus) Subscribe(typ proto.Message, fn HandleFunc) {
 	bus.doSubscribe(typ, &eventHandler{fn, false, false, false, sync.Mutex{}})
 }
 
-func (bus *EventBus) SubscribeAsync(typ pb.FrameType, fn HandleFunc, transactional bool) {
+func (bus *EventBus) SubscribeAsync(typ proto.Message, fn HandleFunc, transactional bool) {
 	bus.doSubscribe(typ, &eventHandler{fn, false, true, transactional, sync.Mutex{}})
 }
 
-func (bus *EventBus) SubscribeOnce(typ pb.FrameType, fn HandleFunc) {
+func (bus *EventBus) SubscribeOnce(typ proto.Message, fn HandleFunc) {
 	bus.doSubscribe(typ, &eventHandler{fn, true, false, false, sync.Mutex{}})
 }
 
-func (bus *EventBus) SubscribeOnceAsync(typ pb.FrameType, fn HandleFunc) {
+func (bus *EventBus) SubscribeOnceAsync(typ proto.Message, fn HandleFunc) {
 	bus.doSubscribe(typ, &eventHandler{fn, true, true, false, sync.Mutex{}})
 }
 
-func (bus *EventBus) Unsubscribe(typ pb.FrameType, fn HandleFunc) error {
+func (bus *EventBus) Unsubscribe(typ proto.Message, fn HandleFunc) error {
 	bus.lock.Lock()
 	defer bus.lock.Unlock()
 	if _, ok := bus.handlers[typ]; ok && len(bus.handlers[typ]) > 0 {
@@ -89,7 +89,7 @@ func (bus *EventBus) Unsubscribe(typ pb.FrameType, fn HandleFunc) error {
 	return errors.Errorf("frame %v doesn't exist", typ)
 }
 
-func (bus *EventBus) Publish(frame *pb.Frame) {
+func (bus *EventBus) Publish(frame proto.Message) {
 	bus.lock.RLock()
 	defer bus.lock.RUnlock()
 	if handlers, ok := bus.handlers[frame.Type]; ok && 0 < len(handlers) {
@@ -116,7 +116,7 @@ func (bus *EventBus) Publish(frame *pb.Frame) {
 	}
 }
 
-func (bus *EventBus) HasCallback(typ pb.FrameType) bool {
+func (bus *EventBus) HasCallback(typ proto.Message) bool {
 	bus.lock.Lock()
 	defer bus.lock.Unlock()
 	_, ok := bus.handlers[typ]
@@ -130,11 +130,11 @@ func (bus *EventBus) WaitAsync() {
 	bus.wg.Wait()
 }
 
-func (bus *EventBus) doPublish(handler *eventHandler, frame *pb.Frame) {
+func (bus *EventBus) doPublish(handler *eventHandler, frame proto.Message) {
 	handler.handleFunc(frame)
 }
 
-func (bus *EventBus) doPublishAsync(handler *eventHandler, frame *pb.Frame) {
+func (bus *EventBus) doPublishAsync(handler *eventHandler, frame proto.Message) {
 	defer bus.wg.Done()
 	if handler.transactional {
 		defer handler.Unlock()
@@ -142,7 +142,7 @@ func (bus *EventBus) doPublishAsync(handler *eventHandler, frame *pb.Frame) {
 	bus.doPublish(handler, frame)
 }
 
-func (bus *EventBus) removeHandler(typ pb.FrameType, i int) {
+func (bus *EventBus) removeHandler(typ proto.Message, i int) {
 	if _, ok := bus.handlers[typ]; !ok {
 		return
 	}
@@ -157,7 +157,7 @@ func (bus *EventBus) removeHandler(typ pb.FrameType, i int) {
 	bus.handlers[typ] = bus.handlers[typ][:l-1]
 }
 
-func (bus *EventBus) findHandlerIdx(typ pb.FrameType, fn HandleFunc) int {
+func (bus *EventBus) findHandlerIdx(typ proto.Message, fn HandleFunc) int {
 	if _, ok := bus.handlers[typ]; ok {
 		for i, v := range bus.handlers[typ] {
 			sf1 := reflect.ValueOf(v.handleFunc)

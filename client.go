@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
 type Color int
@@ -65,12 +66,17 @@ func (c *Client) SubscribeOnce(typ pb.FrameType, handleFunc func(f *pb.Frame)) {
 	c.bus.SubscribeOnceAsync(typ, handleFunc)
 }
 
-func (c *Client) Send(frame *pb.Frame) error {
-	if bs, err := proto.Marshal(frame); err != nil {
+func (c *Client) Send(message proto.Message) error {
+	m, err := anypb.New(message)
+	if err != nil {
 		return err
-	} else {
-		return c.doSend(2, bs)
 	}
+	bs, err := proto.Marshal(m)
+	if err != nil {
+		return err
+	}
+
+	return c.doSend(2, bs)
 }
 
 func (c *Client) Close() error {
