@@ -1,4 +1,4 @@
-package goway
+package internal
 
 // import (
 // 	pb "flynoob/goway/protobuf"

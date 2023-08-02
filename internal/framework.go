@@ -1,7 +1,6 @@
 package internal
 
 import (
-	gw "flynoob/goway"
 	pb "flynoob/goway/protobuf"
 	"sync"
 	"time"
@@ -21,9 +20,9 @@ func startSchedule() {
 	})
 }
 
-func MonitorHealth(client *gw.Client) {
+func monitorHealth(client *Client) {
 	startSchedule()
-	client.Subscribe(&pb.Heartbeat{}, WrapHandler(client, func(c *gw.Client, m proto.Message) {
+	client.Subscribe(&pb.Heartbeat{}, WrapHandler(client, func(c *Client, m proto.Message) {
 		heartbeat, ok := m.(*pb.Heartbeat)
 		if !ok {
 			return
@@ -37,20 +36,20 @@ func MonitorHealth(client *gw.Client) {
 	})
 }
 
-func HandleBytesMessage(c *gw.Client, bs []byte) {
+func HandleBytesMessage(c *Client, bs []byte) {
 
 }
 
-func WrapHandler(c *gw.Client, fn func(*gw.Client, proto.Message)) gw.HandleFunc {
+func WrapHandler(c *Client, fn func(*Client, proto.Message)) HandleFunc {
 	return func(m proto.Message) { fn(c, m) }
 }
 
-func checkHealth(client *gw.Client) {
+func checkHealth(client *Client) {
 	if client.LastPingAt.Add(2 * time.Second).Before(time.Now()) {
 		client.Color += 1
 	}
 
-	if client.Color == gw.Red {
+	if client.Color == Red {
 		client.Close()
 	}
 }

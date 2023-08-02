@@ -1,4 +1,4 @@
-package goway
+package internal
 
 import (
 	pb "flynoob/goway/protobuf"
@@ -125,4 +125,13 @@ func (c *Client) doSend(mt int, message []byte) error {
 		return errors.New("Websocket is disconnected")
 	}
 	return c.conn.WriteMessage(mt, message)
+}
+
+func (c *Client) onReceive(mt int, message []byte) {
+	switch mt {
+	case websocket.PingMessage, websocket.PongMessage, websocket.TextMessage:
+	case websocket.BinaryMessage:
+	case websocket.CloseMessage:
+		c.Close()
+	}
 }

@@ -1,4 +1,4 @@
-package goway
+package internal
 
 import (
 	"flag"
@@ -86,6 +86,7 @@ func (s *Server) GenClientToken(uid string) *jwt.Token {
 }
 
 func (s *Server) Run() error {
+	startSchedule()
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if !s.beforeUpgrade(w, r) {
 			return
@@ -96,33 +97,13 @@ func (s *Server) Run() error {
 			w.Write([]byte(fmt.Sprintf("upgrade error: %s", err)))
 			return
 		}
-		client := NewClient(s, c, uid)
-		s.afterUpgrade(client)
 		defer c.Close()
+
+		client := NewClient(s, c, uid)
 		defer s.recovery(client)
-		for {
-			if client.Status() != Connected {
-				return
-			}
-			mt, message, err := c.ReadMessage()
-			if err != nil {
-				log.Println("read:", err)
-				break
-			}
-			switch mt {
-			case websocket.PingMessage:
-				s.handlePing(client, message)
-			case websocket.PongMessage:
-				s.handlePong(client, message)
-			case websocket.TextMessage:
-				s.handleTextMessage(client, message)
-			case websocket.BinaryMessage:
-				s.handleByteMessage(client, message)
-			case websocket.CloseMessage:
-				s.handleClose(client)
-				return
-			}
-		}
+		s.afterUpgrade(client)
+		monitorHealth(client)
+		depositMessage(client)
 	})
 	return http.ListenAndServe(s.addr, nil)
 }
@@ -163,5 +144,19 @@ func (s *Server) SetPongHandler(handler func(*Client, []byte)) {
 func (s *Server) recovery(client *Client) {
 	if message := recover(); message != nil {
 		s.handleError(client, nil, errors.Errorf("Websocket error: %v", message))
+	}
+}
+
+func depositMessage(client *Client) {
+	for {
+		if client.Status() != Connected {
+			return
+		}
+		mt, message, err := client.conn.ReadMessage()
+		if err != nil {
+			log.Println("read:", err)
+			break
+		}
+		client.onReceive(mt, message)
 	}
 }

@@ -1,4 +1,4 @@
-package goway
+package internal
 
 import (
 	"reflect"

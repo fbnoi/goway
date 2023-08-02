@@ -1,4 +1,4 @@
-package goway
+package internal
 
 type KV[T any] struct {
 	Key   string
