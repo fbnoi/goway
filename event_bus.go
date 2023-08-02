@@ -56,32 +56,35 @@ type eventHandler struct {
 	sync.Mutex
 }
 
-func (bus *EventBus) doSubscribe(typ proto.Message, handler *eventHandler) {
+func (bus *EventBus) doSubscribe(m proto.Message, handler *eventHandler) {
 	bus.lock.Lock()
 	defer bus.lock.Unlock()
+	typ := messageUrlType(m)
 
 	bus.handlers[typ] = append(bus.handlers[typ], handler)
 }
 
-func (bus *EventBus) Subscribe(typ proto.Message, fn HandleFunc) {
-	bus.doSubscribe(typ, &eventHandler{fn, false, false, false, sync.Mutex{}})
+func (bus *EventBus) Subscribe(m proto.Message, fn HandleFunc) {
+	bus.doSubscribe(m, &eventHandler{fn, false, false, false, sync.Mutex{}})
 }
 
-func (bus *EventBus) SubscribeAsync(typ proto.Message, fn HandleFunc, transactional bool) {
-	bus.doSubscribe(typ, &eventHandler{fn, false, true, transactional, sync.Mutex{}})
+func (bus *EventBus) SubscribeAsync(m proto.Message, fn HandleFunc, transactional bool) {
+	bus.doSubscribe(m, &eventHandler{fn, false, true, transactional, sync.Mutex{}})
 }
 
-func (bus *EventBus) SubscribeOnce(typ proto.Message, fn HandleFunc) {
-	bus.doSubscribe(typ, &eventHandler{fn, true, false, false, sync.Mutex{}})
+func (bus *EventBus) SubscribeOnce(m proto.Message, fn HandleFunc) {
+	bus.doSubscribe(m, &eventHandler{fn, true, false, false, sync.Mutex{}})
 }
 
-func (bus *EventBus) SubscribeOnceAsync(typ proto.Message, fn HandleFunc) {
-	bus.doSubscribe(typ, &eventHandler{fn, true, true, false, sync.Mutex{}})
+func (bus *EventBus) SubscribeOnceAsync(m proto.Message, fn HandleFunc) {
+	bus.doSubscribe(m, &eventHandler{fn, true, true, false, sync.Mutex{}})
 }
 
-func (bus *EventBus) Unsubscribe(typ proto.Message, fn HandleFunc) error {
+func (bus *EventBus) Unsubscribe(m proto.Message, fn HandleFunc) error {
 	bus.lock.Lock()
 	defer bus.lock.Unlock()
+	typ := messageUrlType(m)
+
 	if _, ok := bus.handlers[typ]; ok && len(bus.handlers[typ]) > 0 {
 		bus.removeHandler(typ, bus.findHandlerIdx(typ, fn))
 		return nil
@@ -89,17 +92,19 @@ func (bus *EventBus) Unsubscribe(typ proto.Message, fn HandleFunc) error {
 	return errors.Errorf("frame %v doesn't exist", typ)
 }
 
-func (bus *EventBus) Publish(frame proto.Message) {
+func (bus *EventBus) Publish(m proto.Message) {
 	bus.lock.RLock()
 	defer bus.lock.RUnlock()
-	if handlers, ok := bus.handlers[frame.Type]; ok && 0 < len(handlers) {
+	typ := messageUrlType(m)
+
+	if handlers, ok := bus.handlers[typ]; ok && 0 < len(handlers) {
 		onceIdx := []int{}
 		for i, handler := range handlers {
 			if handler.flagOnce {
 				onceIdx = append(onceIdx, i)
 			}
 			if !handler.async {
-				bus.doPublish(handler, frame)
+				bus.doPublish(handler, m)
 			} else {
 				bus.wg.Add(1)
 				if handler.transactional {
@@ -107,18 +112,20 @@ func (bus *EventBus) Publish(frame proto.Message) {
 					handler.Lock()
 					bus.lock.Lock()
 				}
-				go bus.doPublishAsync(handler, frame)
+				go bus.doPublishAsync(handler, m)
 			}
 		}
 		for _, i := range onceIdx {
-			bus.removeHandler(frame.Type, i)
+			bus.removeHandler(typ, i)
 		}
 	}
 }
 
-func (bus *EventBus) HasCallback(typ proto.Message) bool {
+func (bus *EventBus) HasCallback(m proto.Message) bool {
 	bus.lock.Lock()
 	defer bus.lock.Unlock()
+	typ := messageUrlType(m)
+
 	_, ok := bus.handlers[typ]
 	if ok {
 		return len(bus.handlers[typ]) > 0
@@ -130,8 +137,8 @@ func (bus *EventBus) WaitAsync() {
 	bus.wg.Wait()
 }
 
-func (bus *EventBus) doPublish(handler *eventHandler, frame proto.Message) {
-	handler.handleFunc(frame)
+func (bus *EventBus) doPublish(handler *eventHandler, m proto.Message) {
+	handler.handleFunc(m)
 }
 
 func (bus *EventBus) doPublishAsync(handler *eventHandler, frame proto.Message) {
@@ -142,7 +149,7 @@ func (bus *EventBus) doPublishAsync(handler *eventHandler, frame proto.Message) 
 	bus.doPublish(handler, frame)
 }
 
-func (bus *EventBus) removeHandler(typ proto.Message, i int) {
+func (bus *EventBus) removeHandler(typ string, i int) {
 	if _, ok := bus.handlers[typ]; !ok {
 		return
 	}
@@ -157,7 +164,7 @@ func (bus *EventBus) removeHandler(typ proto.Message, i int) {
 	bus.handlers[typ] = bus.handlers[typ][:l-1]
 }
 
-func (bus *EventBus) findHandlerIdx(typ proto.Message, fn HandleFunc) int {
+func (bus *EventBus) findHandlerIdx(typ string, fn HandleFunc) int {
 	if _, ok := bus.handlers[typ]; ok {
 		for i, v := range bus.handlers[typ] {
 			sf1 := reflect.ValueOf(v.handleFunc)
@@ -168,4 +175,8 @@ func (bus *EventBus) findHandlerIdx(typ proto.Message, fn HandleFunc) int {
 		}
 	}
 	return -1
+}
+
+func messageUrlType(m proto.Message) string {
+	return string(m.ProtoReflect().Descriptor().FullName())
 }

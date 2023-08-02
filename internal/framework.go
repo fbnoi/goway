@@ -15,31 +15,34 @@ var (
 	schedulerOnce        = sync.Once{}
 )
 
-func doOnce() {
+func startSchedule() {
 	schedulerOnce.Do(func() {
 		healthyScanScheduler.StartAsync()
 	})
 }
 
-func CheckHealthy(client *gw.Client) {
-	doOnce()
+func MonitorHealth(client *gw.Client) {
+	startSchedule()
+	client.Subscribe(&pb.Heartbeat{}, WrapHandler(client, func(c *gw.Client, m proto.Message) {
+		heartbeat, ok := m.(*pb.Heartbeat)
+		if !ok {
+			return
+		}
+		client.LastPingAt = time.Now()
+		heartbeat.DownTimestamp = client.LastPingAt.UnixMilli()
+		client.Send(heartbeat)
+	}))
 	healthyScanScheduler.Every(1).Second().Do(func() {
 		checkHealth(client)
 	})
 }
 
-func OnPing(client *gw.Client, frame *pb.Frame) error {
-	heartbeat, err := GetHearBeatFrame(frame)
-	if err != nil {
-		return err
-	}
-	defer PutHeartBeat(heartbeat)
-	client.LastPingAt = time.Now()
-	heartbeat.DownTimestamp = client.LastPingAt.UnixMilli()
-	if frame.Body, err = proto.Marshal(heartbeat); err != nil {
-		return err
-	}
-	return client.Send(frame)
+func HandleBytesMessage(c *gw.Client, bs []byte) {
+
+}
+
+func WrapHandler(c *gw.Client, fn func(*gw.Client, proto.Message)) gw.HandleFunc {
+	return func(m proto.Message) { fn(c, m) }
 }
 
 func checkHealth(client *gw.Client) {

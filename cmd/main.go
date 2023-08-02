@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"flynoob/goway/internal"
-	pb "flynoob/goway/protobuf"
 )
 
 func main() {
@@ -17,16 +16,11 @@ func main() {
 	})
 	serve.SetAfterUpgradeHandler(func(c *goway.Client) {
 		log.Println("Connection Established")
-		c.Subscribe(pb.FrameType_HEARTBEAT, func(f *pb.Frame) {
-			if err := internal.OnPing(c, f); err != nil {
-				log.Printf("Ping error: %s\n", err)
-			}
-		})
-		internal.CheckHealthy(c)
+		internal.MonitorHealth(c)
 	})
 	serve.SetByteMessageHandler(func(c *goway.Client, bs []byte) {
 		go func() {
-			if frame, err := internal.GetFrameFromBytes(bs); err != nil {
+			if a, err := internal.GetFrameFromBytes(bs); err != nil {
 				log.Println(err)
 			} else {
 				c.Publish(frame)

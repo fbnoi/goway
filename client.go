@@ -27,6 +27,8 @@ const (
 	DisConnected = SocketStatus(2)
 )
 
+var anyFactory = pb.NewFactory[*anypb.Any]()
+
 func NewClient(serve *Server, conn *websocket.Conn, uid string) *Client {
 	return &Client{
 		conn:      conn,
@@ -53,25 +55,26 @@ type Client struct {
 	sync.RWMutex
 }
 
-func (c *Client) Publish(f *pb.Frame) {
-	c.bus.Publish(f)
+func (c *Client) Publish(m proto.Message) {
+	c.bus.Publish(m)
 	c.bus.WaitAsync()
 }
 
-func (c *Client) Subscribe(typ pb.FrameType, handleFunc func(f *pb.Frame)) {
-	c.bus.SubscribeAsync(typ, handleFunc, false)
+func (c *Client) Subscribe(m proto.Message, handleFunc func(f proto.Message)) {
+	c.bus.SubscribeAsync(m, handleFunc, false)
 }
 
-func (c *Client) SubscribeOnce(typ pb.FrameType, handleFunc func(f *pb.Frame)) {
-	c.bus.SubscribeOnceAsync(typ, handleFunc)
+func (c *Client) SubscribeOnce(m proto.Message, handleFunc func(f proto.Message)) {
+	c.bus.SubscribeOnceAsync(m, handleFunc)
 }
 
-func (c *Client) Send(message proto.Message) error {
-	m, err := anypb.New(message)
+func (c *Client) Send(m proto.Message) error {
+	a := anyFactory.Get()
+	err := a.MarshalFrom(m)
 	if err != nil {
 		return err
 	}
-	bs, err := proto.Marshal(m)
+	bs, err := proto.Marshal(a)
 	if err != nil {
 		return err
 	}
