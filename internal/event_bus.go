@@ -89,7 +89,7 @@ func (bus *EventBus) Unsubscribe(m proto.Message, fn HandleFunc) error {
 		bus.removeHandler(typ, bus.findHandlerIdx(typ, fn))
 		return nil
 	}
-	return errors.Errorf("frame %v doesn't exist", typ)
+	return errors.Errorf("EventBus.Unsubscribe: message %v doesn't exist", typ)
 }
 
 func (bus *EventBus) Publish(m proto.Message) {
@@ -141,12 +141,12 @@ func (bus *EventBus) doPublish(handler *eventHandler, m proto.Message) {
 	handler.handleFunc(m)
 }
 
-func (bus *EventBus) doPublishAsync(handler *eventHandler, frame proto.Message) {
+func (bus *EventBus) doPublishAsync(handler *eventHandler, m proto.Message) {
 	defer bus.wg.Done()
 	if handler.transactional {
 		defer handler.Unlock()
 	}
-	bus.doPublish(handler, frame)
+	bus.doPublish(handler, m)
 }
 
 func (bus *EventBus) removeHandler(typ string, i int) {

@@ -113,32 +113,12 @@ func (s *Server) Listen(addr string) error {
 	return s.Run()
 }
 
-func (s *Server) SetAfterUpgradeHandler(handler func(*Client)) {
-	s.afterUpgrade = handler
-}
-
 func (s *Server) SetBeforeUpgradeHandler(handler func(w http.ResponseWriter, r *http.Request) bool) {
 	s.beforeUpgrade = handler
 }
 
-func (s *Server) SetCloseHandler(handler func(*Client)) {
-	s.handleClose = handler
-}
-
-func (s *Server) SetTextMessageHandler(handler func(*Client, []byte)) {
-	s.handleTextMessage = handler
-}
-
-func (s *Server) SetByteMessageHandler(handler func(*Client, []byte)) {
-	s.handleByteMessage = handler
-}
-
-func (s *Server) SetPingHandler(handler func(*Client, []byte)) {
-	s.handlePing = handler
-}
-
-func (s *Server) SetPongHandler(handler func(*Client, []byte)) {
-	s.handlePong = handler
+func (s *Server) SetAfterUpgradeHandler(handler func(*Client)) {
+	s.afterUpgrade = handler
 }
 
 func (s *Server) recovery(client *Client) {

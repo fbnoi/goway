@@ -138,6 +138,7 @@ func (c *Client) doSend(mt int, message []byte) error {
 
 func (c *Client) doPublish(m proto.Message) {
 	c.bus.Publish(m)
+	// fix me: will wait other publish call
 	c.bus.WaitAsync()
 }
 
