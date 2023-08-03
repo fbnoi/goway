@@ -1,7 +1,6 @@
 package internal
 
 import (
-	pb "flynoob/goway/protobuf"
 	"sync"
 	"time"
 
@@ -27,7 +26,21 @@ const (
 	DisConnected = SocketStatus(2)
 )
 
-var anyFactory = pb.NewFactory[*anypb.Any]()
+var anyFactory = sync.Pool{
+	New: func() any {
+		return &anypb.Any{}
+	},
+}
+
+func getAny() *anypb.Any {
+	a := anyFactory.Get().(*anypb.Any)
+	a.Reset()
+	return a
+}
+
+func putAny(a *anypb.Any) {
+	anyFactory.Put(a)
+}
 
 func NewClient(serve *Server, conn *websocket.Conn, uid string) *Client {
 	return &Client{
@@ -55,11 +68,6 @@ type Client struct {
 	sync.RWMutex
 }
 
-func (c *Client) Publish(m proto.Message) {
-	c.bus.Publish(m)
-	c.bus.WaitAsync()
-}
-
 func (c *Client) Subscribe(m proto.Message, handleFunc func(f proto.Message)) {
 	c.bus.SubscribeAsync(m, handleFunc, false)
 }
@@ -69,7 +77,8 @@ func (c *Client) SubscribeOnce(m proto.Message, handleFunc func(f proto.Message)
 }
 
 func (c *Client) Send(m proto.Message) error {
-	a := anyFactory.Get()
+	a := getAny()
+	defer putAny(a)
 	err := a.MarshalFrom(m)
 	if err != nil {
 		return err
@@ -127,11 +136,32 @@ func (c *Client) doSend(mt int, message []byte) error {
 	return c.conn.WriteMessage(mt, message)
 }
 
-func (c *Client) onReceive(mt int, message []byte) {
+func (c *Client) doPublish(m proto.Message) {
+	c.bus.Publish(m)
+	c.bus.WaitAsync()
+}
+
+func (c *Client) onReceive(mt int, message []byte) error {
 	switch mt {
 	case websocket.PingMessage, websocket.PongMessage, websocket.TextMessage:
 	case websocket.BinaryMessage:
+		a := getAny()
+		defer putAny(a)
+		if err := proto.Unmarshal(message, a); err != nil {
+			return err
+		}
+		m, err := GetMessage(a.TypeUrl)
+		if err != nil {
+			return err
+		}
+		go func() {
+			c.doPublish(m)
+			PutMessage(m)
+		}()
+
 	case websocket.CloseMessage:
 		c.Close()
 	}
+
+	return nil
 }

@@ -9,6 +9,10 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+func WrapHandler(c *Client, fn func(*Client, proto.Message)) HandleFunc {
+	return func(m proto.Message) { fn(c, m) }
+}
+
 var (
 	healthyScanScheduler = gocron.NewScheduler(time.UTC)
 	schedulerOnce        = sync.Once{}
@@ -34,14 +38,6 @@ func monitorHealth(client *Client) {
 	healthyScanScheduler.Every(1).Second().Do(func() {
 		checkHealth(client)
 	})
-}
-
-func HandleBytesMessage(c *Client, bs []byte) {
-
-}
-
-func WrapHandler(c *Client, fn func(*Client, proto.Message)) HandleFunc {
-	return func(m proto.Message) { fn(c, m) }
 }
 
 func checkHealth(client *Client) {
