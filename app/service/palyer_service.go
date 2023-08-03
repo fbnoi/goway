@@ -1,12 +1,15 @@
 package service
 
 import (
-	"flynoob/goway"
 	"flynoob/goway/app/model"
-	pb "flynoob/goway/protobuf"
+	"flynoob/goway/internal"
+	"flynoob/goway/protobuf"
+	"log"
 	"math"
 	"sync"
 	"time"
+
+	"google.golang.org/protobuf/proto"
 )
 
 type queueNode struct {
@@ -85,22 +88,20 @@ type PlayerService struct {
 	mux           sync.Mutex
 }
 
-func (gs *PlayerService) OnStartMatching(client *goway.Client, frame *pb.Frame) {
-	iUser, ok := client.Get("user")
-	if ok {
-		user, ok := iUser.(*model.User)
-		if ok {
-			gs.doMatching(user, client)
-			return
-		}
-	}
-
-	// frame := internal.GetFrame()
-	// MatchingError := &pb.MatchingError{Code: 0, Message: ""}
-	// frame
+func (gs *PlayerService) AddSubscriber(client *internal.Client) {
+	client.Subscribe(&protobuf.Matching{}, internal.WrapHandler(client, gs.matching))
 }
 
-func (gs *PlayerService) doMatching(user *model.User, client *goway.Client) {
+func (gs *PlayerService) matching(client *internal.Client, m proto.Message) {
+	iUser, ok := client.Get("user")
+	if !ok {
+		log.Println("PlayerService.matching: user is not exist")
+	}
+	user := iUser.(*model.User)
+	gs.doMatching(user, client)
+}
+
+func (gs *PlayerService) doMatching(user *model.User, client *internal.Client) {
 	gs.mux.Lock()
 	defer gs.mux.Unlock()
 	matched := false

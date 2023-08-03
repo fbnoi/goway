@@ -42,14 +42,14 @@ func putAny(a *anypb.Any) {
 	anyFactory.Put(a)
 }
 
-func NewClient(serve *Server, conn *websocket.Conn, uid string) *Client {
+func NewClient(serve *Server, conn *websocket.Conn) *Client {
 	return &Client{
 		conn:      conn,
 		Color:     Green,
 		bus:       NewBus(),
 		serve:     serve,
 		status:    Connected,
-		authToken: serve.GenClientToken(uid),
+		authToken: serve.GenClientToken(),
 	}
 }
 
@@ -119,6 +119,10 @@ func (c *Client) Get(name string) (val any, ok bool) {
 	defer c.RUnlock()
 	val, ok = c.session[name]
 	return
+}
+
+func (c *Client) GetToken() *jwt.Token {
+	return c.authToken
 }
 
 func (c *Client) Delete(name string) {

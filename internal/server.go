@@ -42,16 +42,12 @@ func NewServer() *Server {
 				return true
 			},
 		},
-		endpoint:          endpoint,
-		addr:              addr,
-		bus:               NewBus(),
-		beforeUpgrade:     func(w http.ResponseWriter, r *http.Request) bool { return true },
-		afterUpgrade:      func(*Client) {},
-		handlePing:        func(*Client, []byte) {},
-		handlePong:        func(*Client, []byte) {},
-		handleClose:       func(*Client) {},
-		handleTextMessage: func(*Client, []byte) {},
-		handleByteMessage: func(c *Client, b []byte) {},
+		endpoint:      endpoint,
+		addr:          addr,
+		bus:           NewBus(),
+		beforeUpgrade: func(w http.ResponseWriter, r *http.Request) bool { return true },
+		afterUpgrade:  func(*Client) {},
+		handleError:   func(c *Client, b []byte, err error) {},
 	}
 }
 
@@ -61,25 +57,19 @@ type Server struct {
 	upgrader websocket.Upgrader
 	endpoint string
 
-	beforeUpgrade     func(w http.ResponseWriter, r *http.Request) bool
-	afterUpgrade      func(*Client)
-	handlePing        func(*Client, []byte)
-	handlePong        func(*Client, []byte)
-	handleClose       func(*Client)
-	handleTextMessage func(*Client, []byte)
-	handleByteMessage func(*Client, []byte)
-	handleError       func(*Client, []byte, error)
+	beforeUpgrade func(w http.ResponseWriter, r *http.Request) bool
+	afterUpgrade  func(*Client)
+	handleError   func(*Client, []byte, error)
 }
 
 func (s *Server) Endpoint() string {
 	return s.endpoint
 }
 
-func (s *Server) GenClientToken(uid string) *jwt.Token {
+func (s *Server) GenClientToken() *jwt.Token {
 	return jwt.NewWithClaims(jwt.SigningMethodES256, jwt.MapClaims{
 		"iss": s.endpoint,
 		"sub": "client_auth",
-		"aud": uid,
 		"nbf": time.Now().UnixMilli(),
 		"iat": time.Now().UnixMilli(),
 	})
@@ -91,7 +81,6 @@ func (s *Server) Run() error {
 		if !s.beforeUpgrade(w, r) {
 			return
 		}
-		uid := r.URL.Query().Get("_token")
 		c, err := s.upgrader.Upgrade(w, r, nil)
 		if err != nil {
 			w.Write([]byte(fmt.Sprintf("upgrade error: %s", err)))
@@ -99,7 +88,7 @@ func (s *Server) Run() error {
 		}
 		defer c.Close()
 
-		client := NewClient(s, c, uid)
+		client := NewClient(s, c)
 		defer s.recovery(client)
 		s.afterUpgrade(client)
 		monitorHealth(client)

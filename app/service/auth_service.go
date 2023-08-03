@@ -1,12 +1,14 @@
 package service
 
 import (
-	"flynoob/goway"
-	"flynoob/goway/app/model"
+	"flynoob/goway/internal"
+	"net/http"
 )
 
-func GetUserFromClient(client *goway.Client) *model.User {
-	return nil
+func Authenticate(w http.ResponseWriter, r *http.Request) bool {
+	return true
 }
+func AttachUserInfo(client *internal.Client) {
+	token := client.GetToken()
 
-func GetClientFromUser(user *model.User) *goway.Client
+}
